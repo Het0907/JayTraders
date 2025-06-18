@@ -8,11 +8,15 @@ const productRoutes = require('./routes/products');
 const cartRouter = require('./routes/cart');
 const paymentRoutes = require('./routes/payment');
 const contactRoutes = require('./routes/contact');
-
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
+app.use(cookieParser());
+
+
 // CORS configuration
+
 app.use(cors({
   origin: [
     'http://localhost:3000',
@@ -30,9 +34,10 @@ app.use(cors({
 // Serve static files from the 'uploads' directory
 app.use('/uploads', express.static('uploads'));
 
+
 // Middleware
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 // Request logging middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);

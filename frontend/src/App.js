@@ -1,3 +1,8 @@
+import axios from 'axios';
+
+axios.get(API_ENDPOINTS.PRODUCTS, { withCredentials: true });
+
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';

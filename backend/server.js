@@ -14,7 +14,11 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://jaytraders-frontend.vercel.app'], // Add your frontend domains
+  origin: [
+    'jay-traders.vercel.app',
+    'jay-traders-git-main-het-parikhs-projects-c5bb5b58.vercel.app',
+    'jay-traders-rew2awm2r-het-parikhs-projects-c5bb5b58.vercel.app'
+  ], // Add your frontend domains
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']

@@ -1,9 +1,6 @@
-import axios from 'axios';
-
-axios.get(API_ENDPOINTS.PRODUCTS, { withCredentials: true });
-
-
 import React from 'react';
+import API_ENDPOINTS from './config/api';
+import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,6 +28,8 @@ import BrandVariants from './components/BrandVariants';
 import { AuthProvider } from './context/AuthContext';
 import Checkout from './components/Checkout';
 // import payment from './payment';
+
+axios.get(API_ENDPOINTS.PRODUCTS, { withCredentials: true });
 
 // Helper to check authentication status
 const isAuthenticated = () => {

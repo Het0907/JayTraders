@@ -1,12 +1,17 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ChevronDown, Menu, ShoppingBag, X, Phone, Mail, MapPin, ArrowRight, Shield, Truck, Award, Users, ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { productService } from './services/productService';
+import { toast } from 'react-hot-toast';
 
 export default function IndustrialHomepage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [cart, setCart] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Load cart from localStorage when component mounts
@@ -14,73 +19,28 @@ export default function IndustrialHomepage() {
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
+
+    // Fetch products
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await productService.getAllProducts();
+        setProducts(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError('Failed to load products. Please try again later.');
+        toast.error('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
-
-  // Product data for carousel
-  const products = [
-    {
-      id: 1,
-      name: "IBR/Non-IBR pipe & fittings",
-      category: "IBR Materials",
-      image: "IBR.jpeg",
-      price: "",
-      rating: 4.8,
-      description: "High-grade stainless steel hex bolts for heavy-duty applications",
-      specifications: ["Grade A2-70", "M6 to M30", "ISO 4762 Standard"]
-    },
-    {
-      id: 2,
-      name: "Power tools & Machines",
-      category: "Engineering Hardware",
-      image: "powertools.png",
-      price: "",
-      description: "GMP compliant stainless steel pipes for pharmaceutical industry",
-      specifications: ["316L Grade", "Electropolished", "FDA Approved"]
-    },
-    {
-      id: 3,
-      name: "All types if Welding rods",
-      category: "Engineering Hardware",
-      image: "weldingrod.png",
-      price: "₹8,500/piece",
-      rating: 4.7,
-      description: "IBR certified pressure vessel plates for boiler applications",
-      specifications: ["IS 2062 Grade", "IBR Approved", "High Temperature Resistant"]
-    },
-    {
-      id: 4,
-      name: "IBR/NIBR valves",
-      category: "IBR Materials",
-      image: "valves.png",
-      price: "₹150/piece",
-      rating: 4.6,
-      description: "Premium quality gaskets for industrial sealing applications",
-      specifications: ["PTFE Material", "Temperature: -200°C to 260°C", "Various Sizes"]
-    },
-    {
-      id: 5,
-      name: "Taparia tools",
-      category: "Engineering Hardware",
-      image: "taparia.jpeg",
-      price: "₹2,800/piece",
-      rating: 4.8,
-      description: "High-quality flanges for pipe connections and fittings",
-      specifications: ["316 Grade SS", "ANSI B16.5", "Forged Construction"]
-    },
-    {
-      id: 6,
-      name: "Abrasives",
-      category: "Engineering Hardware",
-      image: "abrasives.jpeg",
-      price: "₹4,500/piece",
-      rating: 4.9,
-      description: "Sanitary valves designed for pharmaceutical processes",
-      specifications: ["316L SS", "Tri-Clamp Ends", "CIP/SIP Compatible"]
-    }
-  ];
 
   // Auto-play carousel
   useEffect(() => {
@@ -100,6 +60,75 @@ export default function IndustrialHomepage() {
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
+  };
+
+  const renderProducts = () => {
+    if (loading) {
+      return (
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading products...</p>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-red-600">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Retry
+          </button>
+        </div>
+      );
+    }
+
+    if (!products.length) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-gray-600">No products available at the moment.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid md:grid-cols-3 gap-8 px-4">
+        {products.slice(0, 6).map((product) => (
+          <Link 
+            to={`/product/${product.slug}`}
+            key={product._id} 
+            className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100"
+          >
+            <div className="relative overflow-hidden aspect-square">
+              <img 
+                src={product.image} 
+                alt={product.name}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+              <div className="absolute top-4 left-4">
+                <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                  {product.category?.name || 'Uncategorized'}
+                </span>
+              </div>
+            </div>
+            
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">{product.name}</h3>
+              
+              <div className="flex items-center justify-end">
+                <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-red-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-105 flex items-center">
+                  View Details
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </div>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -169,7 +198,7 @@ export default function IndustrialHomepage() {
         </div>
       </div>
 
-      {/* Product Carousel Section */}
+      {/* Product Section */}
       <div className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -178,84 +207,7 @@ export default function IndustrialHomepage() {
           </div>
 
           <div className="relative">
-            {/* Carousel Container */}
-            <div className="overflow-hidden rounded-2xl">
-              <div 
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ 
-                  transform: `translateX(-${currentSlide * 100}%)`,
-                  transition: 'transform 0.8s cubic-bezier(0.77, 0, 0.175, 1)'
-                }}
-              >
-                {Array.from({ length: Math.ceil(products.length / 3) }).map((_, slideIndex) => (
-                  <div key={slideIndex} className="w-full flex-shrink-0">
-                    <div className="grid md:grid-cols-3 gap-8 px-4">
-                      {products.slice(slideIndex * 3, slideIndex * 3 + 3).map((product) => (
-                        <Link 
-                          to={`/category/${product.category.toLowerCase().replace(/\s+/g, '-')}`}
-                          key={product.id} 
-                          className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100"
-                        >
-                          <div className="relative overflow-hidden aspect-square">
-                            <img 
-                              src={product.image} 
-                              alt={product.name}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            />
-                            <div className="absolute top-4 left-4">
-                              <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                                {product.category}
-                              </span>
-                            </div>
-                          </div>
-                          
-                          <div className="p-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">{product.name}</h3>
-                            
-                            <div className="flex items-center justify-end">
-                              <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-red-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-105 flex items-center">
-                                View Products
-                                <ArrowRight className="ml-2 h-4 w-4" />
-                              </div>
-                            </div>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Navigation Arrows */}
-            <button 
-              onClick={prevSlide}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-90 backdrop-blur-sm hover:bg-opacity-100 text-gray-800 p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 z-10"
-            >
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-            
-            <button 
-              onClick={nextSlide}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-90 backdrop-blur-sm hover:bg-opacity-100 text-gray-800 p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 z-10"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
-
-            {/* Dot Indicators */}
-            <div className="flex justify-center mt-8 space-x-2">
-              {Array.from({ length: Math.ceil(products.length / 3) }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                    currentSlide === index 
-                      ? 'bg-red-600 scale-125' 
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                />
-              ))}
-            </div>
+            {renderProducts()}
           </div>
         </div>
       </div>

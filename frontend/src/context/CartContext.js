@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import API_ENDPOINTS from '../config/api';
 
 const CartContext = createContext();
 
@@ -26,7 +27,7 @@ export const CartProvider = ({ children }) => {
 
     // Create axios instance with default config
     const api = axios.create({
-        baseURL: 'http://localhost:5000/api',
+        baseURL: API_ENDPOINTS.BASE_URL + '/api',
         withCredentials: true,
         headers: {
             'Content-Type': 'application/json'

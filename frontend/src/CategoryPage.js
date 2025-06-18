@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ChevronDown, Menu, ShoppingBag, X, Phone, Mail, MapPin, ArrowRight, Shield, Truck, Award, Users, Search, Home, ChevronRight, Package } from "lucide-react";
 import axios from 'axios';
+import API_ENDPOINTS from './config/api';
 
 export default function CategoryPage() {
   const { categorySlug } = useParams();
@@ -34,7 +35,7 @@ export default function CategoryPage() {
 
         // Check if backend is accessible
         try {
-          const healthCheck = await axios.get('http://localhost:5000/api/health');
+          const healthCheck = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/health`);
           console.log('Health check response:', healthCheck.data);
         } catch (err) {
           console.error('Health check failed:', err);
@@ -42,8 +43,8 @@ export default function CategoryPage() {
         }
 
         // Fetch main category info
-        console.log('Fetching category from:', `http://localhost:5000/api/categories/slug/${categorySlug}`);
-        const categoryResponse = await axios.get(`http://localhost:5000/api/categories/slug/${categorySlug}`);
+        console.log('Fetching category from:', `${API_ENDPOINTS.BASE_URL}/api/categories/slug/${categorySlug}`);
+        const categoryResponse = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/categories/slug/${categorySlug}`);
         console.log('Category response:', categoryResponse.data);
         
         if (!categoryResponse.data) {
@@ -53,7 +54,7 @@ export default function CategoryPage() {
 
         // Fetch subcategories
         console.log('Fetching subcategories for parent:', categoryResponse.data._id);
-        const subcategoriesResponse = await axios.get('http://localhost:5000/api/categories', {
+        const subcategoriesResponse = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/categories`, {
           params: {
             parentCategory: categoryResponse.data._id
           }

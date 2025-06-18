@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin, Clock, Send, Building2, User, MessageSquare, CheckCircle, ChevronDown, Menu, ShoppingBag, X, ArrowRight } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import API_ENDPOINTS from './config/api';
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -44,7 +45,7 @@ const ContactUs = () => {
     setIsSubmitted(false);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/contact', formData);
+      const response = await axios.post(`${API_ENDPOINTS.BASE_URL}/api/contact`, formData);
       
       if (response.status === 200) {
         setIsSubmitted(true);

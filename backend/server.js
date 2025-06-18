@@ -14,8 +14,10 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: 'http://localhost:3000', // Your React app's URL
-  credentials: true
+  origin: ['http://localhost:3000', 'https://jaytraders-frontend.vercel.app'], // Add your frontend domains
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 

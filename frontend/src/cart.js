@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaTrash, FaArrowLeft, FaShoppingBag, FaSync } from 'react-icons/fa';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import API_ENDPOINTS from './config/api';
 
 const Cart = () => {
     const { cart, loading, error, removeFromCart, updateQuantity, getCartTotal, clearCart, fetchCart } = useCart();
@@ -64,7 +65,7 @@ const Cart = () => {
 
             console.log('Creating order with amount:', amount);
             // 1. Call backend to create order
-            const response = await axios.post('http://localhost:5000/api/payment/create-order', { amount });
+            const response = await axios.post(`${API_ENDPOINTS.PAYMENT}/create-order`, { amount });
             console.log('Order creation response:', response.data);
 
             if (!response.data || !response.data.id) {
@@ -84,7 +85,7 @@ const Cart = () => {
                     try {
                         // Verify payment
                         console.log('Verifying payment...');
-                        const verifyResponse = await axios.post('http://localhost:5000/api/payment/verify-payment', {
+                        const verifyResponse = await axios.post(`${API_ENDPOINTS.PAYMENT}/verify-payment`, {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,

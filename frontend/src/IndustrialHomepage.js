@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ChevronDown, Menu, ShoppingBag, X, Phone, Mail, MapPin, ArrowRight, Shield, Truck, Award, Users, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { productService } from './services/productService';
@@ -48,6 +48,7 @@ export default function IndustrialHomepage() {
       id: 1,
       name: "IBR/NIBR pipe & fittings",
       category: "IBR materials",
+      mainCategorySlug: "ibr-materials",
       image: "/IBR.jpeg",
       description: "High-grade welding rods for industrial use."
     },
@@ -55,6 +56,7 @@ export default function IndustrialHomepage() {
       id: 2,
       name: "Welding rod",
       category: "Welding rod",
+      mainCategorySlug: "engineering-hardware",
       image: "/weldingrod.png",
       description: "High-grade welding rods for industrial use."
     },
@@ -62,6 +64,7 @@ export default function IndustrialHomepage() {
       id: 3,
       name: "Taparia tools",
       category: "Taparia tools",
+      mainCategorySlug: "engineering-hardware",
       image: "/taparia.jpeg",
       description: "Premium quality Taparia hand tools."
     },
@@ -69,13 +72,15 @@ export default function IndustrialHomepage() {
       id: 4,
       name: "Drills and Tapset",
       category: "Drills and Tapset",
-      image: "/drills.png",
+      mainCategorySlug: "engineering-hardware",
+      image: "/powertools.png",
       description: "Durable drills and tapsets for engineering."
     },
     {
       id: 5,
       name: "Power tools",
       category: "Power tools",
+      mainCategorySlug: "engineering-hardware",
       image: "/powertools.png",
       description: "Reliable power tools for all applications."
     },
@@ -83,6 +88,7 @@ export default function IndustrialHomepage() {
       id: 6,
       name: "Valves",
       category: "Valves",
+      mainCategorySlug: "engineering-hardware",
       image: "/valves.png",
       description: "Industrial valves for various uses."
     }
@@ -122,7 +128,7 @@ export default function IndustrialHomepage() {
             <div className="grid md:grid-cols-3 gap-8 px-4">
               {carouselProducts.slice(slideIndex * 3, slideIndex * 3 + 3).map((product) => (
                 <Link
-                  to={`/category/engineering-hardware/${product.category.toLowerCase().replace(/\s+/g, '-')}`}
+                  to={`/category/${product.mainCategorySlug}`}
                   key={product.id}
                   className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100"
                 >
@@ -312,13 +318,19 @@ export default function IndustrialHomepage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link to="/engineering-hardware" className="group bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-10 py-4 rounded-full font-bold text-lg hover:from-yellow-300 hover:to-orange-400 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center justify-center">
+              <button
+                onClick={() => window.dispatchEvent(new Event('openProductCategoriesDropdown'))}
+                className="group bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-10 py-4 rounded-full font-bold text-lg hover:from-yellow-300 hover:to-orange-400 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center justify-center"
+              >
                 Explore Products
                 <ArrowRight className="inline-block ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <button className="border-2 border-white text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-red-900 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                Request Quote
               </button>
+              <Link
+                to="/contactus"
+                className="border-2 border-white text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-red-900 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              >
+                Request Quote
+              </Link>
             </div>
           </div>
         </div>

@@ -9,6 +9,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
@@ -62,6 +63,11 @@ const Checkout = () => {
 
     if (!selectedAddress) {
       toast.error('Please select a delivery address.');
+      return false;
+    }
+
+    if (!agreedToTerms) {
+      toast.error('You must agree to the Terms and Conditions before proceeding.');
       return false;
     }
 
@@ -139,7 +145,22 @@ const Checkout = () => {
         {/* Payment Section */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Payment</h2>
-          <Payment onBeforePayment={handleProceedToPayment} selectedAddress={selectedAddress} />
+          <div className="flex items-center mb-4">
+            <input
+              type="checkbox"
+              id="terms"
+              checked={agreedToTerms}
+              onChange={() => setAgreedToTerms(!agreedToTerms)}
+              className="mr-2"
+            />
+            <label htmlFor="terms" className="text-sm">
+              I agree to the{' '}
+              <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                Terms and Conditions
+              </a>
+            </label>
+          </div>
+          <Payment onBeforePayment={handleProceedToPayment} selectedAddress={selectedAddress} disabled={!agreedToTerms} />
         </div>
       </div>
     </div>

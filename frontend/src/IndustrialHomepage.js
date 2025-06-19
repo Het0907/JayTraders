@@ -73,7 +73,7 @@ export default function IndustrialHomepage() {
       name: "Drills and Tapset",
       category: "Drills and Tapset",
       mainCategorySlug: "engineering-hardware",
-      image: "/powertools.png",
+      image: "/drills.png",
       description: "Durable drills and tapsets for engineering."
     },
     {

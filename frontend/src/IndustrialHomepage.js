@@ -46,34 +46,41 @@ export default function IndustrialHomepage() {
   const carouselProducts = [
     {
       id: 1,
+      name: "IBR/NIBR pipe & fittings",
+      category: "IBR materials",
+      image: "/IBR.jpeg",
+      description: "High-grade welding rods for industrial use."
+    },
+    {
+      id: 2,
       name: "Welding rod",
       category: "Welding rod",
       image: "/weldingrod.png",
       description: "High-grade welding rods for industrial use."
     },
     {
-      id: 2,
+      id: 3,
       name: "Taparia tools",
       category: "Taparia tools",
       image: "/taparia.jpeg",
       description: "Premium quality Taparia hand tools."
     },
     {
-      id: 3,
+      id: 4,
       name: "Drills and Tapset",
       category: "Drills and Tapset",
-      image: "/powertools.png",
+      image: "/drills.png",
       description: "Durable drills and tapsets for engineering."
     },
     {
-      id: 4,
+      id: 5,
       name: "Power tools",
       category: "Power tools",
       image: "/powertools.png",
       description: "Reliable power tools for all applications."
     },
     {
-      id: 5,
+      id: 6,
       name: "Valves",
       category: "Valves",
       image: "/valves.png",

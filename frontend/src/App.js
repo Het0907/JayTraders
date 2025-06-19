@@ -27,6 +27,8 @@ import Profile from './components/Profile';
 import BrandVariants from './components/BrandVariants';
 import { AuthProvider } from './context/AuthContext';
 import Checkout from './components/Checkout';
+import Terms from './pages/Terms';
+import Shipping from './pages/Shipping';
 // import payment from './payment';
 
 axios.get(API_ENDPOINTS.PRODUCTS, { withCredentials: true });
@@ -207,6 +209,22 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Checkout />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/terms"
+                element={
+                  <ProtectedRoute>
+                    <Terms />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/shipping"
+                element={
+                  <ProtectedRoute>
+                    <Shipping />
                   </ProtectedRoute>
                 }
               />

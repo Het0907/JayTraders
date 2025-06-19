@@ -18,7 +18,7 @@ const ProductDetail = () => {
         const fetchProduct = async () => {
             try {
                 console.log('Fetching product with slug:', slug);
-                const response = await axios.get(`http://localhost:5000/api/products/${slug}`);
+                const response = await axios.get(`https://jaytraders-5.onrender.com/api/products/${slug}`);
                 console.log('Product response:', response.data);
                 setProduct(response.data);
                 if (response.data.variants && response.data.variants.length > 0) {

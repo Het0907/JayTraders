@@ -42,25 +42,140 @@ export default function IndustrialHomepage() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
-  // Auto-play carousel
+  // Static product data for carousel
+  const carouselProducts = [
+    {
+      id: 1,
+      name: "Welding rod",
+      category: "Welding rod",
+      image: "/weldingrod.png",
+      description: "High-grade welding rods for industrial use."
+    },
+    {
+      id: 2,
+      name: "Taparia tools",
+      category: "Taparia tools",
+      image: "/taparia.jpeg",
+      description: "Premium quality Taparia hand tools."
+    },
+    {
+      id: 3,
+      name: "Drills and Tapset",
+      category: "Drills and Tapset",
+      image: "/powertools.png",
+      description: "Durable drills and tapsets for engineering."
+    },
+    {
+      id: 4,
+      name: "Power tools",
+      category: "Power tools",
+      image: "/powertools.png",
+      description: "Reliable power tools for all applications."
+    },
+    {
+      id: 5,
+      name: "Valves",
+      category: "Valves",
+      image: "/valves.png",
+      description: "Industrial valves for various uses."
+    }
+  ];
+
+  // Carousel logic
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % Math.ceil(products.length / 3));
+      setCurrentSlide((prev) => (prev + 1) % Math.ceil(carouselProducts.length / 3));
     }, 4000);
     return () => clearInterval(timer);
   }, []);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % Math.ceil(products.length / 3));
+    setCurrentSlide((prev) => (prev + 1) % Math.ceil(carouselProducts.length / 3));
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + Math.ceil(products.length / 3)) % Math.ceil(products.length / 3));
+    setCurrentSlide((prev) => (prev - 1 + Math.ceil(carouselProducts.length / 3)) % Math.ceil(carouselProducts.length / 3));
   };
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
   };
+
+  const renderCarousel = () => (
+    <div className="overflow-hidden rounded-2xl">
+      <div
+        className="flex transition-transform duration-500 ease-in-out"
+        style={{
+          transform: `translateX(-${currentSlide * 100}%)`,
+          transition: 'transform 0.8s cubic-bezier(0.77, 0, 0.175, 1)'
+        }}
+      >
+        {Array.from({ length: Math.ceil(carouselProducts.length / 3) }).map((_, slideIndex) => (
+          <div key={slideIndex} className="w-full flex-shrink-0">
+            <div className="grid md:grid-cols-3 gap-8 px-4">
+              {carouselProducts.slice(slideIndex * 3, slideIndex * 3 + 3).map((product) => (
+                <Link
+                  to={`/category/engineering-hardware/${product.category.toLowerCase().replace(/\s+/g, '-')}`}
+                  key={product.id}
+                  className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100"
+                >
+                  <div className="relative overflow-hidden aspect-square">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                        {product.category}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">{product.name}</h3>
+                    <p className="text-gray-600 mb-2">{product.description}</p>
+                    <div className="flex items-center justify-end">
+                      <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-red-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-105 flex items-center">
+                        View Products
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* Navigation Arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-90 backdrop-blur-sm hover:bg-opacity-100 text-gray-800 p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 z-10"
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-90 backdrop-blur-sm hover:bg-opacity-100 text-gray-800 p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 z-10"
+      >
+        <ChevronRight className="h-6 w-6" />
+      </button>
+      {/* Dot Indicators */}
+      <div className="flex justify-center mt-8 space-x-2">
+        {Array.from({ length: Math.ceil(carouselProducts.length / 3) }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`w-3 h-3 rounded-full transition-all duration-200 ${
+              currentSlide === index
+                ? 'bg-red-600 scale-125'
+                : 'bg-gray-300 hover:bg-gray-400'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
 
   const renderProducts = () => {
     if (loading) {
@@ -211,7 +326,7 @@ export default function IndustrialHomepage() {
           </div>
 
           <div className="relative">
-            {renderProducts()}
+            {renderCarousel()}
           </div>
         </div>
       </div>

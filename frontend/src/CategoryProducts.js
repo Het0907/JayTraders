@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { ShoppingBag, ChevronRight, Filter, X } from 'lucide-react';
 import { FaShoppingCart } from 'react-icons/fa';
+import API_ENDPOINTS from './config/api';
 
 export default function CategoryProducts() {
   const { categorySlug, subcategorySlug } = useParams();
@@ -21,7 +22,7 @@ export default function CategoryProducts() {
     const fetchProducts = async () => {
       try {
         console.log('Fetching products for subcategory:', subcategorySlug);
-        const response = await axios.get(`https://jaytraders-5.onrender.com/api/products`, {
+        const response = await axios.get(API_ENDPOINTS.PRODUCTS, {
           params: {
             category: subcategorySlug,
             ...filters

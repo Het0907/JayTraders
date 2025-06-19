@@ -155,7 +155,7 @@ const Checkout = () => {
             />
             <label htmlFor="terms" className="text-sm">
               I agree to the{' '}
-              <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+              <a href="/Terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
                 Terms and Conditions
               </a>
             </label>

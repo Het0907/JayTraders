@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Phone, Mail, MapPin} from 'lucide-react';
 
 const Footer = () => {
     return (
@@ -15,7 +15,7 @@ const Footer = () => {
                         <p className="text-gray-400">
                             Your trusted partner in industrial supplies and equipment.
                         </p>
-                        <div className="flex space-x-4">
+                        {/* <div className="flex space-x-4">
                             <a href="#" className="text-gray-400 hover:text-red-400 transition-colors">
                                 <Facebook className="h-6 w-6" />
                             </a>
@@ -28,7 +28,7 @@ const Footer = () => {
                             <a href="#" className="text-gray-400 hover:text-red-400 transition-colors">
                                 <Linkedin className="h-6 w-6" />
                             </a>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Quick Links */}

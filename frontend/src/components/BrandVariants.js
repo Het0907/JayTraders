@@ -149,7 +149,7 @@ export default function BrandVariants() {
 
                     <button
                       onClick={() => handleAddToCart(product._id, variant._id)}
-                      className="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition flex items-center justify-center gap-2"
+                      className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition flex items-center justify-center gap-2"
                     >
                       <FaShoppingCart /> Add to Cart
                     </button>

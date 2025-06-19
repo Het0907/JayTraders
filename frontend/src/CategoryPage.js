@@ -126,7 +126,11 @@ export default function CategoryPage() {
                 <div className="aspect-w-16 aspect-h-9 bg-gray-100">
                   {category.image ? (
                     <img
-                      src={`http://localhost:5000${category.image}`}
+                      src={category.image?.startsWith('http')
+                        ? category.image
+                        : category.image
+                          ? `https://jaytraders-5.onrender.com/uploads/${category.image.replace(/^uploads[\\/]/, '')}`
+                          : '/default-product-image.png'}
                       alt={category.name}
                       className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-200"
                     />

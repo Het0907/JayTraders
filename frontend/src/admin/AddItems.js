@@ -242,18 +242,30 @@ const AddItems = () => {
               <div className="text-red-600 py-4">{error}</div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {subcategories.map((subcategory) => (
-                  <div
-                    key={subcategory._id}
-                    className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50"
-                    onClick={() => setSelectedSubcategory(subcategory._id)}
-                  >
-                    <h3 className="font-semibold">{subcategory.name}</h3>
-                    {subcategory.description && (
-                      <p className="text-sm text-gray-600 mt-1">{subcategory.description}</p>
-                    )}
-                  </div>
-                ))}
+                {subcategories.map((subcategory) => {
+                  const imageUrl = subcategory.image?.startsWith('http')
+                    ? subcategory.image
+                    : subcategory.image
+                      ? `https://jaytraders-5.onrender.com/uploads/${subcategory.image.replace(/^uploads[\\/]/, '')}`
+                      : '/default-product-image.png';
+                  return (
+                    <div
+                      key={subcategory._id}
+                      className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50 flex flex-col items-center"
+                      onClick={() => setSelectedSubcategory(subcategory._id)}
+                    >
+                      <img
+                        src={imageUrl}
+                        alt={subcategory.name}
+                        className="w-24 h-24 object-cover mb-2 rounded"
+                      />
+                      <h3 className="font-semibold">{subcategory.name}</h3>
+                      {subcategory.description && (
+                        <p className="text-sm text-gray-600 mt-1">{subcategory.description}</p>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

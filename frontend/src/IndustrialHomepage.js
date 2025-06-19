@@ -326,7 +326,7 @@ export default function IndustrialHomepage() {
                 <ArrowRight className="inline-block ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <Link
-                to="/contactus"
+                to="/contact"
                 className="border-2 border-white text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-red-900 transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
                 Request Quote

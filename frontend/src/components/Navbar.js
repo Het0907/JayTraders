@@ -21,6 +21,13 @@ const Navbar = () => {
         }
     }, [user]);
 
+    // Listen for custom event to open product categories dropdown
+    useEffect(() => {
+        const openDropdown = () => setIsDropdownOpen(true);
+        window.addEventListener('openProductCategoriesDropdown', openDropdown);
+        return () => window.removeEventListener('openProductCategoriesDropdown', openDropdown);
+    }, []);
+
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
         if (isDropdownOpen) {

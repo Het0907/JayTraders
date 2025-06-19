@@ -12,6 +12,7 @@ export default function IndustrialHomepage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [cardsPerSlide, setCardsPerSlide] = useState(3);
 
   useEffect(() => {
     // Load cart from localStorage when component mounts
@@ -39,6 +40,21 @@ export default function IndustrialHomepage() {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    const updateCardsPerSlide = () => {
+      if (window.innerWidth < 640) {
+        setCardsPerSlide(1);
+      } else if (window.innerWidth < 1024) {
+        setCardsPerSlide(2);
+      } else {
+        setCardsPerSlide(3);
+      }
+    };
+    updateCardsPerSlide();
+    window.addEventListener('resize', updateCardsPerSlide);
+    return () => window.removeEventListener('resize', updateCardsPerSlide);
+  }, []);
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
@@ -55,7 +71,7 @@ export default function IndustrialHomepage() {
     {
       id: 2,
       name: "Welding rod",
-      category: "Welding rod",
+      category: "Engineering Hardware",
       mainCategorySlug: "engineering-hardware",
       image: "/weldingrod.png",
       description: "High-grade welding rods for industrial use."
@@ -63,7 +79,7 @@ export default function IndustrialHomepage() {
     {
       id: 3,
       name: "Taparia tools",
-      category: "Taparia tools",
+      category: "Engineering Hardware",
       mainCategorySlug: "engineering-hardware",
       image: "/taparia.jpeg",
       description: "Premium quality Taparia hand tools."
@@ -71,7 +87,7 @@ export default function IndustrialHomepage() {
     {
       id: 4,
       name: "Drills and Tapset",
-      category: "Drills and Tapset",
+      category: "Engineering Hardware",
       mainCategorySlug: "engineering-hardware",
       image: "/drills.png",
       description: "Durable drills and tapsets for engineering."
@@ -79,7 +95,7 @@ export default function IndustrialHomepage() {
     {
       id: 5,
       name: "Power tools",
-      category: "Power tools",
+      category: "Engineering Hardware",
       mainCategorySlug: "engineering-hardware",
       image: "/powertools.png",
       description: "Reliable power tools for all applications."
@@ -87,7 +103,7 @@ export default function IndustrialHomepage() {
     {
       id: 6,
       name: "Valves",
-      category: "Valves",
+      category: "Engineering Hardware",
       mainCategorySlug: "engineering-hardware",
       image: "/valves.png",
       description: "Industrial valves for various uses."
@@ -97,17 +113,17 @@ export default function IndustrialHomepage() {
   // Carousel logic
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % Math.ceil(carouselProducts.length / 3));
+      setCurrentSlide((prev) => (prev + 1) % Math.ceil(carouselProducts.length / cardsPerSlide));
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [cardsPerSlide, carouselProducts.length]);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % Math.ceil(carouselProducts.length / 3));
+    setCurrentSlide((prev) => (prev + 1) % Math.ceil(carouselProducts.length / cardsPerSlide));
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + Math.ceil(carouselProducts.length / 3)) % Math.ceil(carouselProducts.length / 3));
+    setCurrentSlide((prev) => (prev - 1 + Math.ceil(carouselProducts.length / cardsPerSlide)) % Math.ceil(carouselProducts.length / cardsPerSlide));
   };
 
   const goToSlide = (index) => {
@@ -115,7 +131,7 @@ export default function IndustrialHomepage() {
   };
 
   const renderCarousel = () => (
-    <div className="overflow-hidden rounded-2xl">
+    <div className="overflow-hidden rounded-2xl relative">
       <div
         className="flex transition-transform duration-500 ease-in-out"
         style={{
@@ -123,10 +139,10 @@ export default function IndustrialHomepage() {
           transition: 'transform 0.8s cubic-bezier(0.77, 0, 0.175, 1)'
         }}
       >
-        {Array.from({ length: Math.ceil(carouselProducts.length / 3) }).map((_, slideIndex) => (
+        {Array.from({ length: Math.ceil(carouselProducts.length / cardsPerSlide) }).map((_, slideIndex) => (
           <div key={slideIndex} className="w-full flex-shrink-0">
-            <div className="grid md:grid-cols-3 gap-8 px-4">
-              {carouselProducts.slice(slideIndex * 3, slideIndex * 3 + 3).map((product) => (
+            <div className={`grid grid-cols-1 ${cardsPerSlide === 2 ? 'md:grid-cols-2' : ''} ${cardsPerSlide === 3 ? 'md:grid-cols-3' : ''} gap-8 px-4`}>
+              {carouselProducts.slice(slideIndex * cardsPerSlide, slideIndex * cardsPerSlide + cardsPerSlide).map((product) => (
                 <Link
                   to={`/category/${product.mainCategorySlug}`}
                   key={product.id}
@@ -175,7 +191,7 @@ export default function IndustrialHomepage() {
       </button>
       {/* Dot Indicators */}
       <div className="flex justify-center mt-8 space-x-2">
-        {Array.from({ length: Math.ceil(carouselProducts.length / 3) }).map((_, index) => (
+        {Array.from({ length: Math.ceil(carouselProducts.length / cardsPerSlide) }).map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}

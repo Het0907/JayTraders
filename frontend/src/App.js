@@ -232,7 +232,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
             </Routes>
           </Layout>
         </Router>

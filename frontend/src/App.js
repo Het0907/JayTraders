@@ -31,7 +31,7 @@ import Terms from './pages/Terms';
 import Shipping from './pages/Shipping';
 import ScrollToTop from './components/ScrollToTop';
 // import PrivacyPolicy from './pages/PrivacyPolicy';
-import payment from './payment';
+// import payment from './payment';
 
 axios.get(API_ENDPOINTS.PRODUCTS, { withCredentials: true });
 

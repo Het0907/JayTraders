@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ChevronRight, Package, Tag, Info, Edit2, Save, X, PlusCircle, MinusCircle } from 'lucide-react';
 import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import API_ENDPOINTS from '../config/api';
 
 export default function EditItems() {
   console.log('EditItems component mounted');
@@ -53,7 +54,7 @@ export default function EditItems() {
     setError(null);
     try {
       console.log('Fetching category ID for slug:', categorySlug);
-      const categoryResponse = await axios.get(`https://jaytraders-5.onrender.com/api/categories/slug/${categorySlug}`);
+      const categoryResponse = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/categories/slug/${categorySlug}`);
       
       if (!categoryResponse.data || !categoryResponse.data._id) {
         console.error('Category data or ID is missing for slug:', categorySlug, categoryResponse.data);
@@ -66,7 +67,7 @@ export default function EditItems() {
       console.log('Extracted Category ID for products:', categoryId);
 
       console.log('Fetching products for category ID:', categoryId);
-      const response = await axios.get(`http://localhost:5000/api/products/category/${categoryId}`);
+      const response = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/products/category/${categoryId}`);
       console.log('Products fetched for editing:', response.data);
       setProducts(response.data);
     } catch (err) {
@@ -220,7 +221,7 @@ export default function EditItems() {
     console.log('Attempting to save product with data:', editForm);
     console.log('Saving product with ID:', editingProduct?._id);
     try {
-      await axios.patch(`http://localhost:5000/api/products/${editingProduct._id}`, editForm, {
+      await axios.patch(`${API_ENDPOINTS.BASE_URL}/api/products/${editingProduct._id}`, editForm, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ChevronRight, Package, Tag, Info, Trash2, AlertTriangle } from 'lucide-react';
+import API_ENDPOINTS from '../config/api';
 
 export default function RemoveItems() {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -41,7 +42,7 @@ export default function RemoveItems() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`https://jaytraders-5.onrender.com/api/products/category/${categoryId}`);
+      const response = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/products/category/${categoryId}`);
       setProducts(response.data);
     } catch (err) {
       setError('Failed to fetch products');
@@ -56,7 +57,7 @@ export default function RemoveItems() {
     setError(null);
     setSuccess(null);
     try {
-      await axios.delete(`http://localhost:5000/api/products/${productId}`);
+      await axios.delete(`${API_ENDPOINTS.BASE_URL}/api/products/${productId}`);
       setSuccess('Product deleted successfully');
       // Refresh the products list
       fetchProducts(selectedCategory);

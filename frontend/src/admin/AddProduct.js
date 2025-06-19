@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Plus, X } from 'lucide-react';
 import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import API_ENDPOINTS from '../config/api';
 
 export default function AddProduct() {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ export default function AddProduct() {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('https://jaytraders-5.onrender.com/api/categories');
+      const response = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/categories`);
       setCategories(response.data);
     } catch (err) {
       console.error('Failed to fetch categories:', err);
@@ -178,7 +179,7 @@ export default function AddProduct() {
         }))
       };
 
-      await axios.post('https://jaytraders-5.onrender.com/api/products', processedData, {
+      await axios.post(`${API_ENDPOINTS.BASE_URL}/api/products`, processedData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}` // Include token if needed

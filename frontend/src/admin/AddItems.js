@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaTools, FaPills, FaIndustry, FaPlus, FaTrash } from 'react-icons/fa';
+import API_ENDPOINTS from '../config/api';
 
 const AddItems = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -55,7 +56,7 @@ const AddItems = () => {
   const fetchSubcategories = async (categoryId) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/categories/${categoryId}/subcategories`);
+      const response = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/categories/${categoryId}/subcategories`);
       setSubcategories(response.data);
       setError('');
     } catch (err) {
@@ -69,7 +70,7 @@ const AddItems = () => {
   const fetchElements = async (subcategoryId) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/categories/subcategories/${subcategoryId}/elements`);
+      const response = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/categories/subcategories/${subcategoryId}/elements`);
       setElements(response.data);
       setError('');
     } catch (err) {
@@ -97,7 +98,7 @@ const AddItems = () => {
         formData.append('image', newSubcategoryImage);
       }
       
-      const response = await axios.post(`http://localhost:5000/api/categories/${selectedCategory}/subcategories`, formData, {
+      const response = await axios.post(`${API_ENDPOINTS.BASE_URL}/api/categories/${selectedCategory}/subcategories`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -125,7 +126,7 @@ const AddItems = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(`https://jaytraders-5.onrender.com/api/categories/subcategories/${selectedSubcategory}/elements`, {
+      const response = await axios.post(`${API_ENDPOINTS.BASE_URL}/api/categories/subcategories/${selectedSubcategory}/elements`, {
         name: newElementName,
         price: Number(newElementPrice),
         description: newElementDescription
@@ -147,7 +148,7 @@ const AddItems = () => {
   const handleDeleteElement = async (elementId) => {
     try {
       setLoading(true);
-      await axios.delete(`https://jaytraders-5.onrender.com/api/products/${elementId}`);
+      await axios.delete(`${API_ENDPOINTS.BASE_URL}/api/products/${elementId}`);
       setElements(elements.filter(element => element._id !== elementId));
       setSuccess('Element deleted successfully');
       setError('');

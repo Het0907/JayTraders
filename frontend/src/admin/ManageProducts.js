@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Search, Edit, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import API_ENDPOINTS from '../config/api';
 
 export default function ManageProducts() {
   const [products, setProducts] = useState([]);
@@ -23,7 +24,7 @@ export default function ManageProducts() {
       setLoading(true);
       setError(null);
       console.log('Fetching products...');
-      const response = await axios.get('https://jaytraders-5.onrender.com/api/products');
+      const response = await axios.get(`${API_ENDPOINTS.PRODUCTS}`);
       console.log('Products response:', response.data);
       setProducts(response.data);
     } catch (err) {
@@ -45,7 +46,7 @@ export default function ManageProducts() {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/categories');
+      const response = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/categories`);
       setCategories(response.data);
     } catch (err) {
       console.error('Failed to fetch categories:', err);
@@ -61,7 +62,7 @@ export default function ManageProducts() {
       setError(null);
       setSuccess(null);
       console.log('Deleting product:', productId);
-      const response = await axios.delete(`http://localhost:5000/api/products/${productId}`);
+      const response = await axios.delete(`${API_ENDPOINTS.BASE_URL}/api/products/${productId}`);
       console.log('Delete response:', response.data);
       
       if (response.data.message === 'Product deleted successfully') {

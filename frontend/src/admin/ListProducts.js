@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ChevronRight, Package, Tag, Info, Trash2, Edit2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import API_ENDPOINTS from '../config/api';
 
 export default function ListProducts() {
   console.log('ListProducts component mounted');
@@ -57,7 +58,7 @@ export default function ListProducts() {
 
   const fetchSubcategories = async (parentSlug) => {
     try {
-      const response = await axios.get(`https://jaytraders-5.onrender.com/api/categories?parentCategorySlug=${parentSlug}`);
+      const response = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/categories?parentCategorySlug=${parentSlug}`);
       setSubcategories(response.data);
       console.log('Fetched subcategories:', response.data);
     } catch (err) {
@@ -73,12 +74,12 @@ export default function ListProducts() {
       let categoryIdToFetch = null;
       if (subcategorySlug) {
         console.log('Fetching category for subcategory slug:', subcategorySlug);
-        const subcategoryResponse = await axios.get(`http://localhost:5000/api/categories/slug/${subcategorySlug}`);
+        const subcategoryResponse = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/categories/slug/${subcategorySlug}`);
         console.log('Subcategory response:', subcategoryResponse.data);
         categoryIdToFetch = subcategoryResponse.data._id;
       } else if (categorySlug) {
         console.log('Fetching category for main category slug:', categorySlug);
-        const categoryResponse = await axios.get(`http://localhost:5000/api/categories/slug/${categorySlug}`);
+        const categoryResponse = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/categories/slug/${categorySlug}`);
         console.log('Category response:', categoryResponse.data);
         categoryIdToFetch = categoryResponse.data._id;
       }
@@ -91,7 +92,7 @@ export default function ListProducts() {
       }
 
       console.log('Fetching products for categoryId:', categoryIdToFetch);
-      const productsResponse = await axios.get(`http://localhost:5000/api/products/category/${categoryIdToFetch}`);
+      const productsResponse = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/products/category/${categoryIdToFetch}`);
       console.log('Products response:', productsResponse.data);
       setProducts(productsResponse.data);
     } catch (err) {
@@ -128,7 +129,7 @@ export default function ListProducts() {
       setLoading(true);
       setError(null);
       setSuccess(null);
-      const response = await axios.delete(`http://localhost:5000/api/categories/${subcategoryId}`);
+      const response = await axios.delete(`${API_ENDPOINTS.BASE_URL}/api/categories/${subcategoryId}`);
       
       if (response.status === 200) {
         setSuccess(`Subcategory "${subcategoryName}" deleted successfully.`);
@@ -171,7 +172,7 @@ export default function ListProducts() {
         image: editSubcategoryImage
       });
       
-      const response = await axios.put(`http://localhost:5000/api/categories/${editingSubcategory._id}`, {
+      const response = await axios.put(`${API_ENDPOINTS.BASE_URL}/api/categories/${editingSubcategory._id}`, {
         name: editSubcategoryName,
         image: editSubcategoryImage,
       });

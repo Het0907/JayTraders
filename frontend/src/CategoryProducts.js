@@ -162,15 +162,6 @@ export default function CategoryProducts() {
           >
             <div className="p-6">
               <div className="flex flex-col items-center justify-center text-center">
-                <img
-                  src={product.image?.startsWith('http')
-                    ? product.image
-                    : product.image
-                      ? `https://jaytraders-5.onrender.com/uploads/${product.image.replace(/^uploads[\\/]/, '')}`
-                      : '/default-product-image.png'}
-                  alt={product.name}
-                  className="w-24 h-24 object-cover mb-4 rounded"
-                />
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">{product.brand}</h3>
                 <p className="text-lg text-gray-700 mb-2">{product.name}</p>
                 <p className="text-gray-600">

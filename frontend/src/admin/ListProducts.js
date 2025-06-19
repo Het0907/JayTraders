@@ -57,7 +57,7 @@ export default function ListProducts() {
 
   const fetchSubcategories = async (parentSlug) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/categories?parentCategorySlug=${parentSlug}`);
+      const response = await axios.get(`https://jaytraders-5.onrender.com/api/categories?parentCategorySlug=${parentSlug}`);
       setSubcategories(response.data);
       console.log('Fetched subcategories:', response.data);
     } catch (err) {

@@ -13,7 +13,7 @@ const EmailVerification = ({ email, onVerificationComplete }) => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/verify-email', {
+      const response = await axios.post('https://jaytraders-5.onrender.com/api/auth/verify-email', {
         email,
         code: verificationCode
       });

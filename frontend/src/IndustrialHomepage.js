@@ -104,7 +104,11 @@ export default function IndustrialHomepage() {
           >
             <div className="relative overflow-hidden aspect-square">
               <img 
-                src={product.image} 
+                src={product.image?.startsWith('http')
+                  ? product.image
+                  : product.image
+                    ? `https://jaytraders-5.onrender.com/uploads/${product.image.replace(/^uploads[\\/]/, '')}`
+                    : '/default-product-image.png'}
                 alt={product.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />

@@ -23,7 +23,7 @@ export default function ManageProducts() {
       setLoading(true);
       setError(null);
       console.log('Fetching products...');
-      const response = await axios.get('http://localhost:5000/api/products');
+      const response = await axios.get('https://jaytraders-5.onrender.com/api/products');
       console.log('Products response:', response.data);
       setProducts(response.data);
     } catch (err) {

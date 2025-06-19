@@ -53,7 +53,7 @@ export default function EditItems() {
     setError(null);
     try {
       console.log('Fetching category ID for slug:', categorySlug);
-      const categoryResponse = await axios.get(`http://localhost:5000/api/categories/slug/${categorySlug}`);
+      const categoryResponse = await axios.get(`https://jaytraders-5.onrender.com/api/categories/slug/${categorySlug}`);
       
       if (!categoryResponse.data || !categoryResponse.data._id) {
         console.error('Category data or ID is missing for slug:', categorySlug, categoryResponse.data);

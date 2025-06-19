@@ -125,7 +125,7 @@ const AddItems = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(`http://localhost:5000/api/categories/subcategories/${selectedSubcategory}/elements`, {
+      const response = await axios.post(`https://jaytraders-5.onrender.com/api/categories/subcategories/${selectedSubcategory}/elements`, {
         name: newElementName,
         price: Number(newElementPrice),
         description: newElementDescription
@@ -147,7 +147,7 @@ const AddItems = () => {
   const handleDeleteElement = async (elementId) => {
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:5000/api/products/${elementId}`);
+      await axios.delete(`https://jaytraders-5.onrender.com/api/products/${elementId}`);
       setElements(elements.filter(element => element._id !== elementId));
       setSuccess('Element deleted successfully');
       setError('');

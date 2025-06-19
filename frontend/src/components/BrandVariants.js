@@ -16,7 +16,7 @@ export default function BrandVariants() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:5000/api/products`, {
+        const response = await axios.get(`https://jaytraders-5.onrender.com/api/products`, {
           params: {
             category: subcategorySlug,
             brand: brandSlug,

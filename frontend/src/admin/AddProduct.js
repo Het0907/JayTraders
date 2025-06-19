@@ -45,7 +45,7 @@ export default function AddProduct() {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/categories');
+      const response = await axios.get('https://jaytraders-5.onrender.com/api/categories');
       setCategories(response.data);
     } catch (err) {
       console.error('Failed to fetch categories:', err);
@@ -178,7 +178,7 @@ export default function AddProduct() {
         }))
       };
 
-      await axios.post('http://localhost:5000/api/products', processedData, {
+      await axios.post('https://jaytraders-5.onrender.com/api/products', processedData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}` // Include token if needed

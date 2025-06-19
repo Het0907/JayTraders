@@ -41,7 +41,7 @@ export default function RemoveItems() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`http://localhost:5000/api/products/category/${categoryId}`);
+      const response = await axios.get(`https://jaytraders-5.onrender.com/api/products/category/${categoryId}`);
       setProducts(response.data);
     } catch (err) {
       setError('Failed to fetch products');

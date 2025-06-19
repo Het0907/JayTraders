@@ -16,7 +16,7 @@ export default function Terms() {
         <li>Jay Traders reserves the right to refuse service to anyone for any reason at any time.</li>
         <li>All disputes are subject to jurisdiction of [Your City] courts only.</li>
       </ul>
-      <p className="mt-6">For any queries, please contact us at <a href="jaytraders2008@yahoo.com" className="text-blue-600 underline">support@jaytraders.com</a>.</p>
+      <p className="mt-6">For any queries, please contact us at <a href="jaytraders2008@yahoo.com" className="text-blue-600 underline">jaytraders2008@yahoo.com</a>.</p>
     </div>
   );
 } 

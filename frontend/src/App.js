@@ -29,6 +29,7 @@ import { AuthProvider } from './context/AuthContext';
 import Checkout from './components/Checkout';
 import Terms from './pages/Terms';
 import Shipping from './pages/Shipping';
+import ScrollToTop from './components/ScrollToTop';
 // import payment from './payment';
 
 axios.get(API_ENDPOINTS.PRODUCTS, { withCredentials: true });
@@ -78,6 +79,8 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
+          <ScrollToTop />
+          <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} newestOnTop closeOnClick pauseOnFocusLoss draggable pauseOnHover />
           <Layout>
             <Routes>
               {/* Redirect root based on authentication status */}

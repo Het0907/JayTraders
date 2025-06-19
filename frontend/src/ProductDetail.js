@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FaShoppingCart, FaStar, FaCheck } from 'react-icons/fa';
 import { useCart } from './context/CartContext';
+import { toast } from 'react-toastify';
 
 const ProductDetail = () => {
     const { slug } = useParams();
@@ -59,18 +60,18 @@ const ProductDetail = () => {
                 const success = await addToCart(product._id, selectedVariant._id, quantity);
                 if (success) {
                     // Show success message
-            alert('Product added to cart!');
+                    toast.success('Product added to cart!');
                     // Reset quantity to 1 after successful add
                     setQuantity(1);
                 } else {
-                    alert('Failed to add product to cart. Please try again.');
+                    toast.error('Failed to add product to cart. Please try again.');
                 }
             } catch (error) {
                 console.error('Error adding to cart:', error);
-                alert('Failed to add product to cart. Please try again.');
+                toast.error('Failed to add product to cart. Please try again.');
             }
         } else {
-            alert('Please select a size and quantity');
+            toast.error('Please select a size and quantity');
         }
     };
 

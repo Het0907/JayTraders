@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
+import { toast } from 'react-toastify';
 
 export default function BrandVariants() {
   const { categorySlug, subcategorySlug, brandSlug } = useParams();
@@ -49,13 +50,13 @@ export default function BrandVariants() {
     try {
       const success = await addToCart(productId, variantId, 1);
       if (success) {
-        alert('Product added to cart!');
+        toast.success('Product added to cart!');
       } else {
-        alert('Failed to add product to cart. Please try again.');
+        toast.error('Failed to add product to cart. Please try again.');
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
-      alert('Failed to add product to cart. Please try again.');
+      toast.error('Failed to add product to cart. Please try again.');
     }
   };
 

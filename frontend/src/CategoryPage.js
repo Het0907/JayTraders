@@ -78,6 +78,17 @@ export default function CategoryPage() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
+  // Helper to get correct image URL
+  const getImageUrl = (img) => {
+    if (!img) return '/default-product-image.png';
+    if (img.startsWith('http')) return img;
+    if (img.startsWith('/uploads/')) return `https://jaytraders-5.onrender.com${img}`;
+    if (img.startsWith('uploads/')) return `https://jaytraders-5.onrender.com/${img}`;
+    if (img.startsWith('/images/')) return `https://jaytraders-5.onrender.com${img}`;
+    if (img.startsWith('images/')) return `https://jaytraders-5.onrender.com/${img}`;
+    return `https://jaytraders-5.onrender.com/uploads/${img.replace(/^uploads[\\/]/, '')}`;
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -126,11 +137,7 @@ export default function CategoryPage() {
                 <div className="aspect-w-16 aspect-h-9 bg-gray-100">
                   {category.image ? (
                     <img
-                      src={category.image?.startsWith('http')
-                        ? category.image
-                        : category.image
-                          ? `https://jaytraders-5.onrender.com/uploads/${category.image.replace(/^uploads[\\/]/, '')}`
-                          : '/default-product-image.png'}
+                      src={getImageUrl(category.image)}
                       alt={category.name}
                       className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-200"
                     />

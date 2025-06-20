@@ -31,6 +31,7 @@ import Terms from './pages/Terms';
 import Shipping from './pages/Shipping';
 import ScrollToTop from './components/ScrollToTop';
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 // import PrivacyPolicy from './pages/PrivacyPolicy';
 // import payment from './payment';
 
@@ -95,6 +96,7 @@ function App() {
               <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
               <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
               <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+              <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
               
               {/* Protected routes */}
               <Route

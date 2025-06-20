@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Store verification codes (in production, use a database)
 const verificationCodes = new Map();
@@ -198,6 +200,36 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.post('/google', async (req, res) => {
+  const { token } = req.body;
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { email, name } = payload;
+
+    // Find or create user
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({ name, email, password: require('crypto').randomBytes(20).toString('hex') });
+      await user.save();
+    }
+
+    // Create JWT for your app
+    const appToken = jwt.sign(
+      { user: { id: user.id, role: user.role } },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({ token: appToken, user });
+  } catch (error) {
+    res.status(401).json({ message: 'Google authentication failed' });
   }
 });
 

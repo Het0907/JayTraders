@@ -30,6 +30,7 @@ import Checkout from './components/Checkout';
 import Terms from './pages/Terms';
 import Shipping from './pages/Shipping';
 import ScrollToTop from './components/ScrollToTop';
+import ForgotPassword from './pages/ForgotPassword';
 // import PrivacyPolicy from './pages/PrivacyPolicy';
 // import payment from './payment';
 
@@ -93,6 +94,7 @@ function App() {
               {/* Public routes (redirect to home if already logged in) */}
               <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
               <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+              <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
               
               {/* Protected routes */}
               <Route

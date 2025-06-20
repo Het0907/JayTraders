@@ -80,13 +80,12 @@ const Login = () => {
       token: credentialResponse.credential,
     })
     .then(res => {
-      // Save JWT to localStorage or context
+      // Save JWT and user data to localStorage
       localStorage.setItem('token', res.data.token);
-      // Redirect or update UI as needed
-      window.location.href = '/';
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+      window.location.href = '/home';
     })
     .catch(err => {
-      // Handle error (show toast, etc.)
       alert('Google sign-in failed');
     });
   }

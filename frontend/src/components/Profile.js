@@ -25,12 +25,13 @@ const Profile = () => {
       return;
     }
     // Set the user data from the stored user object
-    const currentUserData = userData.user || userData;
+    // Always flatten the user object if nested
+    const currentUserData = userData.user ? userData.user : userData;
     setUser(currentUserData);
     setEditablePhone(currentUserData.phone || '');
 
     // Get saved addresses from localStorage
-    const savedAddresses = JSON.parse(localStorage.getItem(`addresses_${currentUserData.email || currentUserData.user?.email}`)) || [];
+    const savedAddresses = JSON.parse(localStorage.getItem(`addresses_${currentUserData.email}`)) || [];
     setAddresses(savedAddresses);
   }, [navigate]);
 
@@ -94,7 +95,7 @@ const Profile = () => {
     setAddresses(updatedAddresses);
     
     // Save to localStorage using the correct email
-    const userEmail = user.email || user.user?.email;
+    const userEmail = user.email;
     localStorage.setItem(`addresses_${userEmail}`, JSON.stringify(updatedAddresses));
     
     // Reset form
@@ -113,7 +114,7 @@ const Profile = () => {
   const handleDeleteAddress = (index) => {
     const updatedAddresses = addresses.filter((_, i) => i !== index);
     setAddresses(updatedAddresses);
-    const userEmail = user.email || user.user?.email;
+    const userEmail = user.email;
     localStorage.setItem(`addresses_${userEmail}`, JSON.stringify(updatedAddresses));
     toast.success('Address deleted successfully');
   };
@@ -124,7 +125,7 @@ const Profile = () => {
       isDefault: i === index
     }));
     setAddresses(updatedAddresses);
-    const userEmail = user.email || user.user?.email;
+    const userEmail = user.email;
     localStorage.setItem(`addresses_${userEmail}`, JSON.stringify(updatedAddresses));
     toast.success('Default address updated');
   };
@@ -132,8 +133,8 @@ const Profile = () => {
   if (!user) return null;
 
   // Get the correct user data fields
-  const userName = user.name || user.user?.name;
-  const userEmail = user.email || user.user?.email;
+  const userName = user.name;
+  const userEmail = user.email;
 
   return (
     <div className="container mx-auto px-4 py-8">

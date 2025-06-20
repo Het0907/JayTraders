@@ -65,7 +65,7 @@ const PublicRoute = ({ children }) => {
 
 function Layout({ children }) {
   const location = useLocation();
-  const hideNavAndFooter = ['/login', '/signup'].includes(location.pathname);
+  const hideNavAndFooter = ['/login', '/signup', '/forgot-password', '/reset-password'].includes(location.pathname);
 
   return (
     <div className="flex flex-col min-h-screen">

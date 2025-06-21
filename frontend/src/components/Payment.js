@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
+import API_ENDPOINTS from '../config/api';
+import { RAZORPAY_CONFIG, validateRazorpayConfig } from '../config/razorpay';
 
 const Payment = ({ onBeforePayment, selectedAddress }) => {
   const { cart, getCartTotal, clearCart } = useCart();
@@ -11,6 +13,17 @@ const Payment = ({ onBeforePayment, selectedAddress }) => {
   const initiatePayment = async () => {
     try {
       console.log('Payment component: initiatePayment called.');
+      console.log('Environment check:');
+      console.log('- REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+      console.log('- REACT_APP_RAZORPAY_KEY_ID:', process.env.REACT_APP_RAZORPAY_KEY_ID ? 'Present' : 'Missing');
+      console.log('- API_ENDPOINTS.PAYMENT:', API_ENDPOINTS.PAYMENT);
+      
+      // Validate Razorpay configuration
+      if (!validateRazorpayConfig()) {
+        toast.error('Payment configuration error. Please contact support.');
+        return;
+      }
+      
       // Check profile completion before creating order
       if (onBeforePayment) {
         const profileCheck = onBeforePayment();
@@ -46,8 +59,10 @@ const Payment = ({ onBeforePayment, selectedAddress }) => {
 
           const amountInPaise = Math.round(currentCartTotal * 100);
           console.log('Payment component: Attempting to create order with amount (in paise):', amountInPaise);
-            // Create order
-            const response = await fetch('http://localhost:5000/api/payment/create-order', {
+          console.log('Payment component: Making request to:', `${API_ENDPOINTS.PAYMENT}/create-order`);
+          
+            // Create order using deployed backend URL
+            const response = await fetch(`${API_ENDPOINTS.PAYMENT}/create-order`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -55,29 +70,31 @@ const Payment = ({ onBeforePayment, selectedAddress }) => {
             body: JSON.stringify({ amount: amountInPaise }),
             });
 
+            console.log('Payment component: Create order response status:', response.status);
+            
             if (!response.ok) {
             const errorData = await response.json();
             console.error('Payment component: Failed to create order. Response:', response.status, errorData);
-            throw new Error(errorData.message || 'Failed to create order');
+            throw new Error(errorData.message || errorData.error || 'Failed to create order');
             }
 
             const order = await response.json();
           console.log('Payment component: Order created successfully:', order);
 
-          console.log('Payment component: Razorpay Key ID:', process.env.REACT_APP_RAZORPAY_KEY_ID);
-            // Initialize Razorpay
+          console.log('Payment component: Razorpay Key ID:', RAZORPAY_CONFIG.key_id);
+            // Initialize Razorpay with proper configuration
             const options = {
-              key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+              key: RAZORPAY_CONFIG.key_id,
               amount: order.amount,
-              currency: order.currency,
-              name: 'Jay Traders',
-            description: 'Order Payment',
+              currency: RAZORPAY_CONFIG.currency,
+              name: RAZORPAY_CONFIG.name,
+              description: RAZORPAY_CONFIG.description,
               order_id: order.id,
               handler: async function (response) {
               console.log('Payment component: Razorpay handler response:', response);
                 try {
-                  // Verify payment
-                  const verifyResponse = await fetch('http://localhost:5000/api/payment/verify-payment', {
+                  // Verify payment using deployed backend URL
+                  const verifyResponse = await fetch(`${API_ENDPOINTS.PAYMENT}/verify-payment`, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
@@ -101,9 +118,9 @@ const Payment = ({ onBeforePayment, selectedAddress }) => {
                   if (verification.verified) {
                     toast.success('Payment successful!');
                   
-                  // --- Place Order API Call --- //
+                  // --- Place Order API Call using deployed backend URL --- //
                   try {
-                    const placeOrderResponse = await fetch('http://localhost:5000/api/orders/place-order', {
+                    const placeOrderResponse = await fetch(`${API_ENDPOINTS.ORDERS}/place-order`, {
                       method: 'POST',
                       headers: {
                         'Content-Type': 'application/json',
@@ -151,16 +168,16 @@ const Payment = ({ onBeforePayment, selectedAddress }) => {
                 email: 'customer@example.com',
                 contact: '9999999999',
               },
-              theme: {
-                color: '#3399cc',
-              },
+              theme: RAZORPAY_CONFIG.theme,
             };
 
+          console.log('Payment component: Initializing Razorpay with options:', options);
           const rzp = new window.Razorpay(options);
+          console.log('Payment component: Razorpay instance created, opening payment modal...');
           rzp.open();
           } catch (error) {
           console.error('Payment component: Payment initialization error inside onload:', error);
-            toast.error('Failed to initialize payment');
+            toast.error('Failed to initialize payment: ' + error.message);
           setPaymentInitiated(false); // Reset on error
         } finally {
           // Remove the script after use to avoid duplicates

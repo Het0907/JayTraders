@@ -32,6 +32,7 @@ import Shipping from './pages/Shipping';
 import ScrollToTop from './components/ScrollToTop';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import RazorpayTest from './components/RazorpayTest';
 // import PrivacyPolicy from './pages/PrivacyPolicy';
 // import payment from './payment';
 
@@ -233,6 +234,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Shipping />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/razorpay-test"
+                element={
+                  <ProtectedRoute>
+                    <RazorpayTest />
                   </ProtectedRoute>
                 }
               />

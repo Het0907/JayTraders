@@ -251,7 +251,7 @@ export default function IndustrialHomepage() {
                 src={product.image?.startsWith('http')
                   ? product.image
                   : product.image
-                    ? `https://jaytraders-5.onrender.com/uploads/${product.image.replace(/^uploads[\\/]/, '')}`
+                      ? `https://jaytraders-5.onrender.com/uploads/${product.image.replace(/^uploads[\\/]/, '')}`
                     : '/default-product-image.png'}
                 alt={product.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -280,9 +280,9 @@ export default function IndustrialHomepage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-gray-50 w-full">
       {/* Hero Section */}
-      <div className="relative min-h-[600px] bg-gradient-to-br from-slate-900 via-red-900 to-slate-800 overflow-hidden">
+      <div className="relative min-h-[600px] bg-gradient-to-br from-slate-900 via-red-900 to-slate-800 overflow-hidden flex items-center justify-center w-full">
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
           {/* Geometric Shapes */}
@@ -312,8 +312,8 @@ export default function IndustrialHomepage() {
         {/* Bottom Decoration */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900/50 to-transparent"></div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center">
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 flex flex-col justify-center items-center min-h-[500px]">
+          <div className="text-center w-full">
             <div className="mb-8">
               <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-800 mb-4">
                 <Award className="h-4 w-4 mr-2" />
@@ -353,8 +353,8 @@ export default function IndustrialHomepage() {
       </div>
 
       {/* Product Section */}
-      <div className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-20 bg-white w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Featured Products</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">Discover our premium range of industrial products trusted by leading companies</p>
@@ -367,8 +367,8 @@ export default function IndustrialHomepage() {
       </div>
 
       {/* Features Section */}
-      <div className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-20 bg-gray-50 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Industry Leaders Choose Us</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">Excellence through innovation, quality, and unmatched service standards.</p>

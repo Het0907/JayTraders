@@ -282,7 +282,7 @@ export default function IndustrialHomepage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 w-full">
       {/* Hero Section */}
-      <div className="relative min-h-[600px] bg-gradient-to-br from-slate-900 via-red-900 to-slate-800 overflow-hidden flex items-center justify-center w-full">
+      <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-red-900 to-slate-800 overflow-hidden flex items-center justify-center w-full">
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
           {/* Geometric Shapes */}
@@ -312,7 +312,7 @@ export default function IndustrialHomepage() {
         {/* Bottom Decoration */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900/50 to-transparent"></div>
 
-        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 flex flex-col justify-center items-center min-h-[500px]">
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center min-h-screen">
           <div className="text-center w-full">
             <div className="mb-8">
               <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-800 mb-4">

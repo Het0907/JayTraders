@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingBag, ChevronDown, ArrowRight, User, LogOut } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -15,6 +15,10 @@ const Navbar = () => {
     const location = useLocation();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
+    // Add refs for dropdown and button
+    const dropdownRef = useRef(null);
+    const dropdownBtnRef = useRef(null);
+
     useEffect(() => {
         if (user) {
             setIsAdmin(user.role === 'admin');
@@ -27,6 +31,23 @@ const Navbar = () => {
         window.addEventListener('openProductCategoriesDropdown', openDropdown);
         return () => window.removeEventListener('openProductCategoriesDropdown', openDropdown);
     }, []);
+
+    // Click outside to close dropdown
+    useEffect(() => {
+        if (!isDropdownOpen) return;
+        function handleClickOutside(event) {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target) &&
+                dropdownBtnRef.current &&
+                !dropdownBtnRef.current.contains(event.target)
+            ) {
+                setIsDropdownOpen(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [isDropdownOpen]);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -101,16 +122,16 @@ const Navbar = () => {
 
                         {/* Product Category Dropdown */}
                         <div className="relative">
-                            <button 
+                            <button
+                                ref={dropdownBtnRef}
                                 onClick={toggleDropdown}
                                 className={`flex items-center text-gray-700 hover:text-red-600 font-medium transition-colors duration-200 focus:outline-none ${isDropdownOpen ? 'text-red-600' : ''}`}
                             >
                                 Product Categories
                                 <ChevronDown className="ml-1 h-4 w-4" />
                             </button>
-                            
                             {isDropdownOpen && (
-                                <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl z-10 animate-fade-in">
+                                <div ref={dropdownRef} className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl z-10 animate-fade-in">
                                     <div className="py-2">
                                         <Link to="/category/engineering-hardware" className="flex items-center px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors group" onClick={() => { setIsDropdownOpen(false); setIsMenuOpen(false); }}>
                                             <div className="w-2 h-2 bg-red-500 rounded-full mr-3 group-hover:scale-125 transition-transform"></div>

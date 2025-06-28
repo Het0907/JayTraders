@@ -32,10 +32,12 @@ const Navbar = () => {
         return () => window.removeEventListener('openProductCategoriesDropdown', openDropdown);
     }, []);
 
-    // Click outside to close dropdown
+    // Click outside to close dropdown (desktop only)
     useEffect(() => {
         if (!isDropdownOpen) return;
-        function handleClickOutside(event) {
+        function handlePointerDown(event) {
+            // Only apply for desktop (md and up)
+            if (window.innerWidth < 768) return;
             if (
                 dropdownRef.current &&
                 !dropdownRef.current.contains(event.target) &&
@@ -45,8 +47,8 @@ const Navbar = () => {
                 setIsDropdownOpen(false);
             }
         }
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        document.addEventListener('pointerdown', handlePointerDown);
+        return () => document.removeEventListener('pointerdown', handlePointerDown);
     }, [isDropdownOpen]);
 
     const toggleMenu = () => {

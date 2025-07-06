@@ -73,76 +73,87 @@ app.post('/api/contact', async (req, res) => {
 
 // New Order Placement Endpoint
 app.post('/api/orders/place-order', async (req, res) => {
-  const { cartItems, totalAmount, selectedAddress, paymentDetails } = req.body;
-  
-  // You would typically save this order to your database here
-  // For now, we'll just log it and send an email
-  console.log('Received new order:', {
-    cartItems,
-    totalAmount,
-    selectedAddress,
-    paymentDetails,
-  });
+  const { cartItems, selectedAddress, user, totalAmount } = req.body;
 
-  // Construct HTML for the order details in the email
-  let orderItemsHtml = '';
-  if (cartItems && cartItems.length > 0) {
-    orderItemsHtml = `
-      <h3>Ordered Items:</h3>
-      <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">
-        <thead>
-          <tr>
-            <th>Product Name</th>
-            <th>Quantity</th>
-            <th>Price (per item)</th>
-            <th>Total Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${cartItems.map(item => `
-            <tr>
-              <td>${item.product.name}</td>
-              <td>${item.quantity}</td>
-              <td>₹${item.product.price}</td>
-              <td>₹${item.totalPrice}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
+  // Validate company name and address
+  if (!user || !user.companyName || !selectedAddress || !selectedAddress.street) {
+    return res.status(400).json({ message: 'Company name and address are required to place an order.' });
   }
 
+  // Prepare order data for Excel
+  const orderId = 'ORD-' + Date.now();
+  const orderDate = new Date().toLocaleString();
+  const orderProducts = cartItems.map(item => `${item.product.name} (x${item.quantity})`).join(', ');
+
+  // Excel file logic
+  const ExcelJS = require('exceljs');
+  const fs = require('fs');
+  const excelPath = 'orders.xlsx';
+  let workbook, worksheet;
+  if (fs.existsSync(excelPath)) {
+    workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(excelPath);
+    worksheet = workbook.getWorksheet('Orders');
+  } else {
+    workbook = new ExcelJS.Workbook();
+    worksheet = workbook.addWorksheet('Orders');
+    worksheet.columns = [
+      { header: 'Order ID', key: 'orderId', width: 20 },
+      { header: 'User Name', key: 'userName', width: 20 },
+      { header: 'Email', key: 'email', width: 25 },
+      { header: 'Company Name', key: 'companyName', width: 25 },
+      { header: 'Address', key: 'address', width: 40 },
+      { header: 'Products', key: 'products', width: 40 },
+      { header: 'Total Amount', key: 'totalAmount', width: 15 },
+      { header: 'Date', key: 'date', width: 20 },
+    ];
+  }
+  worksheet.addRow({
+    orderId,
+    userName: user.name,
+    email: user.email,
+    companyName: user.companyName,
+    address: `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state}, ${selectedAddress.pincode}`,
+    products: orderProducts,
+    totalAmount,
+    date: orderDate,
+  });
+  await workbook.xlsx.writeFile(excelPath);
+
+  // Email notification to admin
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER, // Your admin email
-      to: process.env.ADMIN_EMAIL_RECEIVER, // Admin's email to receive order notifications
-      subject: `New Order Placed - #${paymentDetails.razorpay_order_id}`,
+      from: process.env.EMAIL_USER,
+      to: process.env.ADMIN_EMAIL_RECEIVER,
+      subject: `New Order Placed - #${orderId}`,
       html: `
         <h2>New Order Placed!</h2>
-        <p>An order has been successfully placed on your website.</p>
-        <p><strong>Order ID:</strong> ${paymentDetails.razorpay_order_id}</p>
-        <p><strong>Payment ID:</strong> ${paymentDetails.razorpay_payment_id}</p>
+        <p><strong>Order ID:</strong> ${orderId}</p>
+        <p><strong>User:</strong> ${user.name} (${user.email})</p>
+        <p><strong>Company Name:</strong> ${user.companyName}</p>
+        <p><strong>Address:</strong> ${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state}, ${selectedAddress.pincode}</p>
+        <p><strong>Products:</strong> ${orderProducts}</p>
         <p><strong>Total Amount:</strong> ₹${totalAmount}</p>
-
-        <h3>Delivery Address:</h3>
-        <p><strong>Company Name:</strong> ${selectedAddress.companyName || 'N/A'}</p>
-        <p><strong>Street:</strong> ${selectedAddress.street}</p>
-        <p><strong>City:</strong> ${selectedAddress.city}</p>
-        <p><strong>State:</strong> ${selectedAddress.state}</p>
-        <p><strong>Pincode:</strong> ${selectedAddress.pincode}</p>
-        
-        ${orderItemsHtml}
-
-        <p>Please log in to your admin panel for more details.</p>
+        <p><strong>Date:</strong> ${orderDate}</p>
       `,
     };
-
     await transporter.sendMail(mailOptions);
     console.log('Order placement email sent to admin successfully!');
     res.status(200).json({ message: 'Order placed successfully!' });
   } catch (error) {
     console.error('Error processing order and sending email:', error);
     res.status(500).json({ message: 'Failed to place order. Internal server error.' });
+  }
+});
+
+// Endpoint for admin to download the Excel file
+app.get('/api/orders/download-excel', (req, res) => {
+  const filePath = 'orders.xlsx';
+  const fs = require('fs');
+  if (fs.existsSync(filePath)) {
+    res.download(filePath, 'orders.xlsx');
+  } else {
+    res.status(404).json({ message: 'No orders file found.' });
   }
 });
 

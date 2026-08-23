@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
 import API_ENDPOINTS from '../config/api';
-import { RAZORPAY_CONFIG, validateRazorpayConfig } from '../config/razorpay';
 
 const Payment = ({ onBeforePayment, selectedAddress }) => {
   const { cart, getCartTotal, clearCart } = useCart();

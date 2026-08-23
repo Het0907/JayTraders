@@ -13,6 +13,7 @@ export default function ListProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [success, setSuccess] = useState(null);
   const [editingSubcategory, setEditingSubcategory] = useState(null);
   const [editSubcategoryName, setEditSubcategoryName] = useState('');

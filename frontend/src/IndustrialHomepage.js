@@ -1,35 +1,10 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ArrowRight, Shield, Truck, Award, Users, ChevronLeft, ChevronRight } from "lucide-react";
-import { productService } from './services/productService';
-import { toast } from 'react-hot-toast';
 
 export default function IndustrialHomepage() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [cardsPerSlide, setCardsPerSlide] = useState(3);
-
-  useEffect(() => {
-    // Fetch products
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const data = await productService.getAllProducts();
-        setProducts(data);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching products:', err);
-        setError('Failed to load products. Please try again later.');
-        toast.error('Failed to load products');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
 
   useEffect(() => {
     const updateCardsPerSlide = () => {

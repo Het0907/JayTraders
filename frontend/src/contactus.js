@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from "react-router-dom";
-import { Phone, Mail, MapPin, Clock, Send, Building2, User, MessageSquare, CheckCircle, ChevronDown, Menu, ShoppingBag, X, ArrowRight } from 'lucide-react';
+import { useLocation } from "react-router-dom";
+import { Phone, Mail, MapPin, Send, Building2, User, MessageSquare, CheckCircle } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import API_ENDPOINTS from './config/api';
@@ -15,8 +15,6 @@ const ContactUs = () => {
     message: ''
   });
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const location = useLocation();
@@ -34,9 +32,6 @@ const ContactUs = () => {
       }));
     }
   }, [location.search]);
-
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   const handleInputChange = (e) => {
     setFormData({

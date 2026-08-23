@@ -1,6 +1,4 @@
 import React from 'react';
-import API_ENDPOINTS from './config/api';
-import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -24,11 +22,6 @@ import { AuthProvider } from './context/AuthContext';
 import Terms from './pages/Terms';
 import Shipping from './pages/Shipping';
 import ScrollToTop from './components/ScrollToTop';
-import RazorpayTest from './components/RazorpayTest';
-// import PrivacyPolicy from './pages/PrivacyPolicy';
-// import payment from './payment';
-
-axios.get(API_ENDPOINTS.PRODUCTS, { withCredentials: true });
 
 
 
@@ -108,7 +101,6 @@ function App() {
               <Route path="/product/:productId" element={<ProductDetail />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/shipping" element={<Shipping />} />
-              <Route path="/razorpay-test" element={<RazorpayTest />} />
             </Routes>
           </Layout>
         </Router>

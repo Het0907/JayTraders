@@ -10,6 +10,7 @@ const API_BASE_URL = (isLocalhost ? 'http://localhost:5000' : configuredApiUrl).
 export const API_TIMEOUT = 60 * 1000;
 
 axios.defaults.withCredentials = true;
+axios.defaults.timeout = API_TIMEOUT;
 
 export const API_ENDPOINTS = {
     BASE_URL: API_BASE_URL,

@@ -246,7 +246,7 @@ const AddItems = () => {
                   const imageUrl = subcategory.image?.startsWith('http')
                     ? subcategory.image
                     : subcategory.image
-                      ? `https://jaytraders-5.onrender.com/uploads/${subcategory.image.replace(/^uploads[\\/]/, '')}`
+                      ? `${API_ENDPOINTS.BASE_URL}/uploads/${subcategory.image.replace(/^uploads[\\/]/, '')}`
                       : '/default-product-image.png';
                   return (
                     <div

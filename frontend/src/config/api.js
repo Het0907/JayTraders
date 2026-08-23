@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://jaytraders-5.onrender.com';
+const isLocalhost = Boolean(
+  typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+);
+
+const configuredApiUrl = process.env.REACT_APP_API_URL || 'https://jaytraders-5.onrender.com';
+const API_BASE_URL = (isLocalhost ? 'http://localhost:5000' : configuredApiUrl).replace(/\/$/, '');
 
 axios.defaults.withCredentials = true;
 

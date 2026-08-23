@@ -82,10 +82,6 @@ export default function WeldingRodBrands() {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-200"></span>
               </Link>
               <div className="relative">
-                <Link to="/cart" className="text-gray-700 hover:text-red-600 font-medium transition-colors duration-200 relative group flex items-center">
-                  <ShoppingBag className="h-6 w-6" />
-                  <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full animate-pulse">{cart.length}</span>
-                </Link>
               </div>
 
             </div>
@@ -159,7 +155,7 @@ export default function WeldingRodBrands() {
                           className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-2 rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-300 transform hover:scale-[1.02] font-medium"
                           onClick={() => addToCart(item.brand, size)}
                         >
-                          Add to Cart
+                          Request Quotation
                         </button>
                       </div>
                     ))}
@@ -172,7 +168,6 @@ export default function WeldingRodBrands() {
           <div className="mt-12 bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-gray-900">Cart Preview</h3>
-              <span className="text-sm text-gray-500">{cart.length} items</span>
             </div>
             {cart.length === 0 ? (
               <div className="text-center py-8">
@@ -273,7 +268,7 @@ export default function WeldingRodBrands() {
           </div>
         </div>
       </footer>
-      <style jsx>{`
+      <style>{`
         @keyframes slide-down {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }

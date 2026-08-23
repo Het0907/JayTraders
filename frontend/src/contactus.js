@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Phone, Mail, MapPin, Clock, Send, Building2, User, MessageSquare, CheckCircle, ChevronDown, Menu, ShoppingBag, X, ArrowRight } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
@@ -19,15 +19,21 @@ const ContactUs = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [cart, setCart] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
-    // Load cart from localStorage when component mounts
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
+    const params = new URLSearchParams(location.search);
+    const product = params.get('product');
+    const subject = params.get('subject');
+
+    if (product) {
+      setFormData(prev => ({
+        ...prev,
+        subject: subject || 'quotation',
+        message: `I would like to inquire about ${product}. Please share availability and quotation details.`
+      }));
     }
-  }, []);
+  }, [location.search]);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);

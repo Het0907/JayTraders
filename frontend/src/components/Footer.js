@@ -51,9 +51,6 @@ const Footer = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/cart" className="text-gray-400 hover:text-red-400 transition-colors">
-                                    Cart
-                                </Link>
                             </li>
                         </ul>
                     </div>

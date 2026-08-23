@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import API_ENDPOINTS from '../config/api';
 
 const EmailVerification = ({ email, onVerificationComplete }) => {
   const [verificationCode, setVerificationCode] = useState('');
@@ -13,7 +14,7 @@ const EmailVerification = ({ email, onVerificationComplete }) => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('https://jaytraders-5.onrender.com/api/auth/verify-email', {
+      const response = await axios.post(`${API_ENDPOINTS.AUTH}/verify-email`, {
         email,
         code: verificationCode
       });
@@ -32,7 +33,7 @@ const EmailVerification = ({ email, onVerificationComplete }) => {
   const handleResendCode = async () => {
     setIsLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/auth/resend-verification', { email });
+      await axios.post(`${API_ENDPOINTS.AUTH}/resend-verification`, { email });
       toast.success('Verification code resent!');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to resend code');

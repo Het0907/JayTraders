@@ -3,24 +3,18 @@ import { useState, useEffect } from "react";
 import { ChevronDown, Menu, ShoppingBag, X, Phone, Mail, MapPin, ArrowRight, Shield, Truck, Award, Users, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { productService } from './services/productService';
 import { toast } from 'react-hot-toast';
+import API_ENDPOINTS from './config/api';
 
 export default function IndustrialHomepage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cardsPerSlide, setCardsPerSlide] = useState(3);
 
   useEffect(() => {
-    // Load cart from localStorage when component mounts
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-
     // Fetch products
     const fetchProducts = async () => {
       try {
@@ -251,7 +245,7 @@ export default function IndustrialHomepage() {
                 src={product.image?.startsWith('http')
                   ? product.image
                   : product.image
-                      ? `https://jaytraders-5.onrender.com/uploads/${product.image.replace(/^uploads[\\/]/, '')}`
+                        ? `${API_ENDPOINTS.BASE_URL}/uploads/${product.image.replace(/^uploads[\\/]/, '')}`
                     : '/default-product-image.png'}
                 alt={product.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -505,7 +499,7 @@ export default function IndustrialHomepage() {
       `}</style>
    
  */}
-<style jsx>{`
+<style>{`
   .carousel-container {
     overflow: hidden;
     width: 100%;

@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
+import API_ENDPOINTS from '../config/api';
 
 export default function BrandVariants() {
   const { categorySlug, subcategorySlug, brandSlug } = useParams();
@@ -17,7 +18,7 @@ export default function BrandVariants() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`https://jaytraders-5.onrender.com/api/products`, {
+        const response = await axios.get(API_ENDPOINTS.PRODUCTS, {
           params: {
             category: subcategorySlug,
             brand: brandSlug,

@@ -1,0 +1,46 @@
+# Implementation Plan - Product Management Utility
+
+Create a standalone, deployable web application inside a dedicated `utility/` folder (`d:/Internship-1/ecom/sample/JayTraders/utility`) designed specifically to manage and add products structured under **Category → Product → Brand**.
+
+## Architecture & Design
+
+1. **Standalone Deployment Setup**:
+   - Independent application inside `utility/` with its own `package.json`, build scripts, and static assets.
+   - Designed to be hosted separately on services like Vercel, Netlify, or Render.
+   - Configurable Backend API URL field (with presets for `http://localhost:5000` and production `https://jaytraders-5.onrender.com`).
+
+2. **Category → Product → Brand Workflow**:
+   - **Step 1: Category Manager**: Select an existing Category / Subcategory from the database or create a new Category on the fly.
+   - **Step 2: Product Definition**: Enter Product Name, Slug, Description, Specifications (Material, Type, Finish), and Feature bullet points.
+   - **Step 3: Brand & Variants**: Select or add Brand (e.g., Mangalam, Superon, Taparia, Totem, Jay Traders), and define size variants with optional pricing.
+   - **Step 4: Image & Preview**: Image URL / Base64 upload with live product card preview matching the main store's design.
+   - **Step 5: Submission & Management**: Save to MongoDB backend, with a dedicated tab to view, search, and manage existing product listings organized by **Category → Product → Brand**.
+
+## Proposed Components & Files
+
+### [NEW] [package.json](file:///d:/Internship-1/ecom/sample/JayTraders/utility/package.json)
+- Standalone dependencies (`react`, `react-dom`, `lucide-react`, `axios`, `react-toastify`, `tailwindcss`).
+
+### [NEW] [index.html](file:///d:/Internship-1/ecom/sample/JayTraders/utility/public/index.html)
+- Standalone HTML root entry.
+
+### [NEW] [App.js](file:///d:/Internship-1/ecom/sample/JayTraders/utility/src/App.js)
+- Main Utility Dashboard with Tabbed Navigation:
+  - **Add New Product (Guided Workflow)**
+  - **Category -> Product -> Brand Explorer**
+  - **API Server Config Settings**
+
+### [NEW] [AddProductWizard.js](file:///d:/Internship-1/ecom/sample/JayTraders/utility/src/components/AddProductWizard.js)
+- Guided form for Category → Product → Brand schema creation with live card preview.
+
+### [NEW] [ProductExplorer.js](file:///d:/Internship-1/ecom/sample/JayTraders/utility/src/components/ProductExplorer.js)
+- Hierarchical tree/card view grouped by Category → Product → Brand with search, edit, and delete options.
+
+## Verification Plan
+
+### Automated Build Verification
+- Execute `npm run build` inside `utility/` to confirm standalone production build creates without errors.
+
+### Manual Verification
+- Test adding new product with Category → Product → Brand selection.
+- Verify API connectivity and database insertion.

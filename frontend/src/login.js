@@ -46,7 +46,7 @@ const Login = () => {
   };
 
   const handleGoogleLoginSuccess = (credentialResponse) => {
-    axios.post(`${process.env.REACT_APP_API_URL}/api/auth/google`, {
+    axios.post(`${API_ENDPOINTS.AUTH}/google`, {
       token: credentialResponse.credential,
     })
     .then(res => {
@@ -155,13 +155,12 @@ const Login = () => {
           </div>
 
           {/* Google Login */}
-          <div className="flex justify-center">
+          <div className="flex justify-center w-full">
             <GoogleLogin
               onSuccess={handleGoogleLoginSuccess}
               onError={() => alert('Google sign-in failed')}
               theme="outline"
               size="large"
-              width="100%"
             />
           </div>
         </form>

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const Category = require('../models/Category');
 const Product = require('../models/Product');
 const multer = require('multer');
@@ -56,6 +57,87 @@ router.get('/test', async (req, res) => {
     }
 });
 
+// Rename subcategory (Updates all products in category having this name)
+router.put('/subcategories/rename', async (req, res) => {
+    try {
+        const { categoryId, oldName, newName } = req.body;
+        if (!categoryId || !oldName || !newName) {
+            return res.status(400).json({ message: 'categoryId, oldName, and newName are required' });
+        }
+
+        const mainCat = mongoose.Types.ObjectId.isValid(categoryId)
+            ? await Category.findById(categoryId)
+            : await Category.findOne({ slug: categoryId });
+
+        const catId = mainCat ? mainCat._id : categoryId;
+
+        // Update all products in this category with name == oldName
+        const productResult = await Product.updateMany(
+            { category: catId, name: oldName.trim() },
+            { $set: { name: newName.trim() } }
+        );
+
+        // Update child Category document if exists
+        const newSlug = newName.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-');
+        await Category.updateMany(
+            { parentCategory: catId, name: oldName.trim() },
+            { $set: { name: newName.trim(), slug: newSlug } }
+        );
+
+        res.json({
+            message: 'Subcategory renamed successfully',
+            matchedCount: productResult.matchedCount || productResult.n || 0,
+            modifiedCount: productResult.modifiedCount || productResult.nModified || 0,
+            newName: newName.trim()
+        });
+    } catch (err) {
+        console.error('Error renaming subcategory:', err);
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Delete subcategory (Deletes all products under this subcategory)
+const handleDeleteSubcategory = async (req, res) => {
+    try {
+        const categoryId = req.body?.categoryId || req.query?.categoryId;
+        const subcategoryName = req.body?.subcategoryName || req.query?.subcategoryName || req.body?.name || req.query?.name;
+
+        if (!categoryId || !subcategoryName) {
+            return res.status(400).json({ message: 'categoryId and subcategoryName are required' });
+        }
+
+        const mainCat = mongoose.Types.ObjectId.isValid(categoryId)
+            ? await Category.findById(categoryId)
+            : await Category.findOne({ slug: categoryId });
+
+        const catId = mainCat ? mainCat._id : categoryId;
+
+        // Delete all products with this category and subcategory name
+        const deletedProducts = await Product.deleteMany({
+            category: catId,
+            name: subcategoryName.trim()
+        });
+
+        // Delete child category document if exists
+        await Category.deleteMany({
+            parentCategory: catId,
+            name: subcategoryName.trim()
+        });
+
+        res.json({
+            message: `Deleted subcategory "${subcategoryName}" and ${deletedProducts.deletedCount || 0} associated brand products`,
+            deletedCount: deletedProducts.deletedCount || 0
+        });
+    } catch (err) {
+        console.error('Error deleting subcategory:', err);
+        res.status(500).json({ message: err.message });
+    }
+};
+
+router.post('/subcategories/delete', handleDeleteSubcategory);
+router.delete('/subcategories/delete', handleDeleteSubcategory);
+router.delete('/subcategories', handleDeleteSubcategory);
+
 // Get all categories or filter by parent
 router.get('/', async (req, res) => {
     try {
@@ -84,16 +166,13 @@ router.get('/', async (req, res) => {
 // Get category by slug
 router.get('/slug/:slug', async (req, res) => {
     try {
-        console.log('Fetching category by slug:', req.params.slug); // Debug log
         const category = await Category.findOne({ slug: req.params.slug })
             .populate('parentCategory');
         
         if (!category) {
-            console.log('Category not found for slug:', req.params.slug); // Debug log
             return res.status(404).json({ message: 'Category not found' });
         }
         
-        console.log('Found category:', category); // Debug log
         res.json(category);
     } catch (err) {
         console.error('Error fetching category by slug:', err);
@@ -124,7 +203,8 @@ router.post('/', async (req, res) => {
             slug: req.body.slug,
             description: req.body.description,
             image: req.body.image,
-            parentCategory: req.body.parentCategory
+            parentCategory: req.body.parentCategory || null,
+            isMainCategory: !req.body.parentCategory
         });
 
         const newCategory = await category.save();
@@ -143,7 +223,7 @@ router.put('/:id', upload.single('image'), async (req, res) => {
             return res.status(404).json({ message: 'Category not found' });
         }
 
-        let imagePath = category.image;
+        let imagePath = req.body.image !== undefined ? req.body.image : category.image;
 
         if (req.file) {
             const originalPath = req.file.path;
@@ -159,18 +239,19 @@ router.put('/:id', upload.single('image'), async (req, res) => {
             }
         }
 
+        const updateData = {};
+        if (req.body.name !== undefined) updateData.name = req.body.name;
+        if (req.body.slug !== undefined) updateData.slug = req.body.slug;
+        if (req.body.description !== undefined) updateData.description = req.body.description;
+        if (imagePath !== undefined) updateData.image = imagePath;
+        if (req.body.parentCategory !== undefined) updateData.parentCategory = req.body.parentCategory || null;
+        if (req.body.isMainCategory !== undefined) updateData.isMainCategory = req.body.isMainCategory;
+        if (req.body.order !== undefined) updateData.order = req.body.order;
+        if (req.body.isActive !== undefined) updateData.isActive = req.body.isActive;
+
         const updatedCategory = await Category.findByIdAndUpdate(
             req.params.id,
-            {
-                name: req.body.name,
-                slug: req.body.slug,
-                description: req.body.description,
-                image: imagePath,
-                parentCategory: req.body.parentCategory,
-                isMainCategory: req.body.isMainCategory,
-                order: req.body.order,
-                isActive: req.body.isActive
-            },
+            updateData,
             { new: true }
         );
 
@@ -181,7 +262,7 @@ router.put('/:id', upload.single('image'), async (req, res) => {
     }
 });
 
-// Delete category
+// Delete category (with cascade delete for subcategories and products)
 router.delete('/:id', async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
@@ -189,14 +270,24 @@ router.delete('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Category not found' });
         }
 
-        // Check if category has subcategories
-        const hasSubcategories = await Category.exists({ parentCategory: category._id });
-        if (hasSubcategories) {
-            return res.status(400).json({ message: 'Cannot delete category with subcategories' });
-        }
+        // Find child subcategories if any
+        const subcategories = await Category.find({ parentCategory: category._id });
+        const subcategoryIds = subcategories.map(s => s._id);
+        const allCatIds = [category._id, ...subcategoryIds];
 
+        // Delete all associated products
+        const deletedProducts = await Product.deleteMany({ category: { $in: allCatIds } });
+
+        // Delete child categories
+        await Category.deleteMany({ parentCategory: category._id });
+
+        // Delete main category
         await Category.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Category deleted' });
+
+        res.json({ 
+            message: `Category "${category.name}" and all associated products deleted successfully`,
+            deletedProductsCount: deletedProducts.deletedCount || 0
+        });
     } catch (err) {
         console.error('Error deleting category:', err);
         res.status(500).json({ message: err.message });

@@ -404,19 +404,23 @@ const products = {
     ]
 };
 
-async function initializeDatabase() {
+async function seedDatabase({ reset = true, connect = true, disconnect = true } = {}) {
     try {
-        // Connect to MongoDB
-        await mongoose.connect(process.env.MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-        console.log('Connected to MongoDB successfully');
+        if (connect && mongoose.connection.readyState !== 1) {
+            // Connect to MongoDB
+            await mongoose.connect(process.env.MONGODB_URI, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+            });
+            console.log('Connected to MongoDB successfully');
+        }
 
-        // Clear existing categories
-        await Category.deleteMany({});
-        await Product.deleteMany({});
-        console.log('Cleared existing categories');
+        if (reset) {
+            // Clear existing categories
+            await Category.deleteMany({});
+            await Product.deleteMany({});
+            console.log('Cleared existing categories');
+        }
 
         // Create main categories
         const createdCategories = await Category.insertMany(mainCategories);
@@ -522,9 +526,17 @@ async function initializeDatabase() {
     } catch (error) {
         console.error('Error initializing database:', error);
     } finally {
-        await mongoose.disconnect();
-        console.log('Disconnected from MongoDB');
+        if (disconnect && mongoose.connection.readyState !== 0) {
+            await mongoose.disconnect();
+            console.log('Disconnected from MongoDB');
+        }
     }
 }
 
-initializeDatabase(); 
+if (require.main === module) {
+    seedDatabase({ reset: true, connect: true, disconnect: true });
+}
+
+module.exports = {
+    seedDatabase
+};

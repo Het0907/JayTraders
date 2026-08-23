@@ -4,6 +4,7 @@ import axios from 'axios';
 import { FaShoppingCart, FaStar, FaCheck } from 'react-icons/fa';
 import { useCart } from './context/CartContext';
 import { toast } from 'react-toastify';
+import API_ENDPOINTS from './config/api';
 
 const ProductDetail = () => {
     const { slug } = useParams();
@@ -19,7 +20,7 @@ const ProductDetail = () => {
         const fetchProduct = async () => {
             try {
                 console.log('Fetching product with slug:', slug);
-                const response = await axios.get(`https://jaytraders-5.onrender.com/api/products/${slug}`);
+                const response = await axios.get(`${API_ENDPOINTS.PRODUCTS}/${slug}`);
                 console.log('Product response:', response.data);
                 setProduct(response.data);
                 if (response.data.variants && response.data.variants.length > 0) {

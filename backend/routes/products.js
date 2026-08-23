@@ -11,9 +11,14 @@ router.get('/', async (req, res) => {
         
         // Filter by category
         if (req.query.category) {
-            const category = await Category.findOne({ slug: req.query.category });
+            let catQuery = mongoose.Types.ObjectId.isValid(req.query.category)
+                ? { _id: req.query.category }
+                : { slug: req.query.category };
+            const category = await Category.findOne(catQuery);
             if (category) {
-                query.category = category._id;
+                const subcategories = await Category.find({ parentCategory: category._id });
+                const catIds = [category._id, ...subcategories.map(s => s._id)];
+                query.category = { $in: catIds };
             }
         }
 
@@ -138,8 +143,8 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Update product
-router.patch('/:id', async (req, res) => {
+// Update product handler
+const updateProductHandler = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
         if (!product) {
@@ -155,7 +160,10 @@ router.patch('/:id', async (req, res) => {
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
-});
+};
+
+router.patch('/:id', updateProductHandler);
+router.put('/:id', updateProductHandler);
 
 // Delete a product
 router.delete('/:id', async (req, res) => {

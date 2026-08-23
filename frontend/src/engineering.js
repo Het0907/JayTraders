@@ -2,27 +2,21 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, Menu, ShoppingBag, X, Phone, Mail, MapPin, ArrowRight, Shield, Truck, Award, Users, Search, Home, ChevronRight } from "lucide-react";
 import axios from 'axios';
+import API_ENDPOINTS from './config/api';
 
 export default function EngineeringHardwarePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showCategories, setShowCategories] = useState(true);
-  const [cart, setCart] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Load cart from localStorage when component mounts
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-
     // Fetch categories from backend
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/categories', {
+        const response = await axios.get(`${API_ENDPOINTS.BASE_URL}/api/categories`, {
           params: {
             parentCategory: 'engineering' // This will fetch all engineering subcategories
           }
@@ -202,10 +196,6 @@ export default function EngineeringHardwarePage() {
               </div>
               
               <div className="relative">
-                <Link to="/cart" className="text-gray-700 hover:text-red-600 font-medium transition-colors duration-200 relative group flex items-center">
-                  <ShoppingBag className="h-6 w-6" />
-                  <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full animate-pulse">{cart.length}</span>
-                </Link>
               </div>
             </div>
 
@@ -437,7 +427,7 @@ export default function EngineeringHardwarePage() {
         </div>
       </footer>
 
-      <style jsx>{`
+      <style>{`
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { ChevronRight, Package, Tag, Info, Edit2, Save, X, PlusCircle, MinusCircle } from 'lucide-react';
+import { ChevronRight, Package, Tag, Info, Edit2, Save, PlusCircle, MinusCircle } from 'lucide-react';
 import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import API_ENDPOINTS from '../config/api';

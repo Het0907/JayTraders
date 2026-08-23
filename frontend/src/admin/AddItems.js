@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaTools, FaPills, FaIndustry, FaPlus, FaTrash } from 'react-icons/fa';
+import { FaTools, FaPills, FaIndustry, FaTrash } from 'react-icons/fa';
 import API_ENDPOINTS from '../config/api';
 
 const AddItems = () => {

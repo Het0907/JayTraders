@@ -1,13 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ChevronDown, Menu, ShoppingBag, X, Phone, Mail, MapPin, ArrowRight, Shield, Truck, Award, Users, ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { ArrowRight, Shield, Truck, Award, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { productService } from './services/productService';
 import { toast } from 'react-hot-toast';
-import API_ENDPOINTS from './config/api';
 
 export default function IndustrialHomepage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,9 +45,6 @@ export default function IndustrialHomepage() {
     window.addEventListener('resize', updateCardsPerSlide);
     return () => window.removeEventListener('resize', updateCardsPerSlide);
   }, []);
-
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   // Static product data for carousel
   const carouselProducts = [
@@ -199,79 +193,6 @@ export default function IndustrialHomepage() {
       </div>
     </div>
   );
-
-  const renderProducts = () => {
-    if (loading) {
-      return (
-        <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading products...</p>
-        </div>
-      );
-    }
-
-    if (error) {
-      return (
-        <div className="text-center py-8">
-          <p className="text-red-600">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Retry
-          </button>
-        </div>
-      );
-    }
-
-    if (!products.length) {
-      return (
-        <div className="text-center py-8">
-          <p className="text-gray-600">No products available at the moment.</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="grid md:grid-cols-3 gap-8 px-4">
-        {products.slice(0, 6).map((product) => (
-          <Link 
-            to={`/product/${product.slug}`}
-            key={product._id} 
-            className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100"
-          >
-            <div className="relative overflow-hidden aspect-square">
-              <img 
-                src={product.image?.startsWith('http')
-                  ? product.image
-                  : product.image
-                        ? `${API_ENDPOINTS.BASE_URL}/uploads/${product.image.replace(/^uploads[\\/]/, '')}`
-                    : '/default-product-image.png'}
-                alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute top-4 left-4">
-                <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                  {product.category?.name || 'Uncategorized'}
-                </span>
-              </div>
-            </div>
-            
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">{product.name}</h3>
-              
-              <div className="flex items-center justify-end">
-                <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-red-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-105 flex items-center">
-                  View Details
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </div>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
-    );
-  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 w-full">

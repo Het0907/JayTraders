@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Package, Edit, Plus, Trash2, List, Download } from 'lucide-react';
+import { Edit, Plus, Trash2, List, Download } from 'lucide-react';
 
 export default function AdminDashboard() {
   return (

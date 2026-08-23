@@ -1,22 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
-import { Building2, Target, Award, Users, CheckCircle, Phone, Zap, MessageCircle, Trophy, ChevronDown, Menu, ShoppingBag, X, ArrowRight } from 'lucide-react';
+import React from 'react';
+import { Building2, Target, Award, Users, Phone, Zap, MessageCircle, Trophy } from 'lucide-react';
 
 const AboutUs = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [cart, setCart] = useState([]);
-
-  useEffect(() => {
-    // Load cart from localStorage when component mounts
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-  }, []);
-
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">

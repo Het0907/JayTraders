@@ -7,6 +7,7 @@ const isLocalhost = Boolean(
 
 const configuredApiUrl = process.env.REACT_APP_API_URL || 'https://jaytraders-5.onrender.com';
 const API_BASE_URL = (isLocalhost ? 'http://localhost:5000' : configuredApiUrl).replace(/\/$/, '');
+export const API_TIMEOUT = 60 * 1000;
 
 axios.defaults.withCredentials = true;
 

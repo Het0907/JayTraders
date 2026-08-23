@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
-import API_ENDPOINTS from './config/api';
+import API_ENDPOINTS, { API_TIMEOUT } from './config/api';
 
 export default function CategoryPage() {
   const { categorySlug } = useParams();
@@ -15,7 +15,7 @@ export default function CategoryPage() {
       setLoading(true);
       setError(null);
       try {
-        const catRes = await axios.get(API_ENDPOINTS.BASE_URL + '/api/categories', { timeout: 8000 });
+        const catRes = await axios.get(API_ENDPOINTS.BASE_URL + '/api/categories', { timeout: API_TIMEOUT });
         const allCategories = catRes.data || [];
         const normSlug = (categorySlug || '').toLowerCase().trim();
         const main = allCategories.find(c => 
@@ -28,7 +28,7 @@ export default function CategoryPage() {
 
         const prodRes = await axios.get(API_ENDPOINTS.PRODUCTS, { 
           params: { category: main.slug || categorySlug },
-          timeout: 8000
+          timeout: API_TIMEOUT
         });
         const products = prodRes.data || [];
 

@@ -14,7 +14,7 @@ import {
 export default function App() {
   const [activeTab, setActiveTab] = useState('add');
   const [apiBaseUrl, setApiBaseUrl] = useState(
-    process.env.REACT_APP_API_URL || 'http://localhost:5000'
+    process.env.REACT_APP_API_URL || 'https://jaytraders-5.onrender.com'
   );
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [tempApiUrl, setTempApiUrl] = useState(apiBaseUrl);

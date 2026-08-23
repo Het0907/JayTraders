@@ -22,6 +22,7 @@ import { AuthProvider } from './context/AuthContext';
 import Terms from './pages/Terms';
 import Shipping from './pages/Shipping';
 import ScrollToTop from './components/ScrollToTop';
+import API_ENDPOINTS from './config/api';
 
 
 
@@ -42,6 +43,20 @@ function Layout({ children }) {
 }
 
 function App() {
+  React.useEffect(() => {
+    const keepBackendAwake = () => {
+      fetch(`${API_ENDPOINTS.BASE_URL}/api/health`)
+        .catch(() => {
+          // The keep-alive request is best effort and should not affect the UI.
+        });
+    };
+
+    keepBackendAwake();
+    const intervalId = window.setInterval(keepBackendAwake, 5 * 60 * 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   return (
     <AuthProvider>
       <CartProvider>

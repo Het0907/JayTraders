@@ -76,7 +76,7 @@ export default function IndustrialHomepage() {
       name: "Abrasives",
       category: "Engineering Hardware",
       mainCategorySlug: "engineering-hardware",
-      image: "/abrasives.png",
+      image: "/Abrasives-2.png",
       description: "High-quality abrasives for industrial applications."
     },
     {

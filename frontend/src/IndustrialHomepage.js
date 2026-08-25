@@ -25,7 +25,7 @@ export default function IndustrialHomepage() {
   const carouselProducts = [
     {
       id: 1,
-      name: "IBR/NIBR pipe & fittings",
+      name: "IBR/NIBR pipe fittings",
       category: "IBR materials",
       mainCategorySlug: "ibr-materials",
       image: "/IBR.jpeg",
@@ -36,7 +36,7 @@ export default function IndustrialHomepage() {
       name: "Welding rod",
       category: "Engineering Hardware",
       mainCategorySlug: "engineering-hardware",
-      image: "/weldingrod.png",
+      image: "/Welding-consumables.png",
       description: "High-grade welding rods for industrial use."
     },
     {
@@ -65,12 +65,36 @@ export default function IndustrialHomepage() {
     },
     {
       id: 6,
-      name: "Valves",
+      name: "IBR Pipes",
+      category: "IBR materials",
+      mainCategorySlug: "ibr-materials",
+      image: "/IBR-pipes.png",
+      description: "High-grade IBR pipes for industrial use."
+    },
+    {
+      id: 7,
+      name: "Abrasives",
       category: "Engineering Hardware",
       mainCategorySlug: "engineering-hardware",
+      image: "/abrasives.png",
+      description: "High-quality abrasives for industrial applications."
+    },
+    {
+      id: 8,
+      name: "Aluminium Foil Bags",
+      category: "Pharma Materials",
+      mainCategorySlug: "pharma-materials",
+      image: "/Aluminiumbags.png",
+      description: "High-quality aluminium foil bags for industrial use."
+    },
+    {
+      id: 9,
+      name: "Valves",
+      category: "IBR materials",
+      mainCategorySlug: "ibr-materials",
       image: "/valves.png",
       description: "Industrial valves for various uses."
-    }
+    },
   ];
 
   // Carousel logic

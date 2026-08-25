@@ -84,7 +84,7 @@ const Navbar = () => {
             lightBg: "bg-blue-50 text-blue-600"
         },
         {
-            title: "IBR Materials",
+            title: "IBR Pipes & Fittings",
             slug: "ibr-materials",
             description: "IBR certified pressure plates, boiler pipes & thermal fittings.",
             icon: Gauge,

@@ -182,11 +182,10 @@ export default function IndustrialHomepage() {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-200 ${
-              currentSlide === index
+            className={`w-3 h-3 rounded-full transition-all duration-200 ${currentSlide === index
                 ? 'bg-red-600 scale-125'
                 : 'bg-gray-300 hover:bg-gray-400'
-            }`}
+              }`}
           />
         ))}
       </div>
@@ -201,16 +200,16 @@ export default function IndustrialHomepage() {
         <div className="absolute inset-0">
           {/* Geometric Shapes */}
           <div className="absolute top-20 left-10 w-64 h-64 bg-red-500/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-red-600/15 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-400/5 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
-          
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-red-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-400/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+
           {/* Grid Pattern Overlay */}
           <div className="absolute inset-0 opacity-20" style={{
             backgroundImage: `linear-gradient(rgba(239, 68, 68, 0.1) 1px, transparent 1px),
                              linear-gradient(90deg, rgba(239, 68, 68, 0.1) 1px, transparent 1px)`,
             backgroundSize: '50px 50px'
           }}></div>
-          
+
           {/* Diagonal Lines */}
           <div className="absolute inset-0 opacity-10" style={{
             backgroundImage: `repeating-linear-gradient(
@@ -234,19 +233,19 @@ export default function IndustrialHomepage() {
                 Trusted since 2008
               </span>
             </div>
-            
+
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
               Quality Industrial
               <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                 Suppliers
               </span>
             </h1>
-            
+
             <p className="text-xl md:text-2xl text-red-100 mb-10 max-w-4xl mx-auto leading-relaxed">
-              Jay Traders delivers excellence in engineering hardware, pharmaceutical materials, 
+              Jay Traders delivers excellence in engineering hardware, pharmaceutical materials,
               and IBR certified products. Your success is our commitment.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button
                 onClick={() => window.dispatchEvent(new Event('openProductCategoriesDropdown'))}
@@ -419,7 +418,7 @@ export default function IndustrialHomepage() {
       `}</style>
    
  */}
-<style>{`
+      <style>{`
   .carousel-container {
     overflow: hidden;
     width: 100%;
@@ -435,7 +434,7 @@ export default function IndustrialHomepage() {
     flex-shrink: 0;
   }
 `}
-</style>
-</div>
+      </style>
+    </div>
   );
 }

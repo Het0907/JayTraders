@@ -5,16 +5,32 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Create reusable Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.EMAIL_PORT, 10) || 587,
-  secure: process.env.EMAIL_SECURE === 'true',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// Create reusable Nodemailer transporter with connection timeout protection
+function createTransporter() {
+  const user = process.env.EMAIL_USER;
+  const rawPass = process.env.EMAIL_PASS || '';
+  const pass = rawPass.replace(/\s+/g, '').trim();
+
+  if (process.env.EMAIL_SERVICE === 'gmail' || !process.env.EMAIL_HOST) {
+    return nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user, pass },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+    });
+  }
+
+  return nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: parseInt(process.env.EMAIL_PORT, 10) || 465,
+    secure: process.env.EMAIL_SECURE === 'true' || parseInt(process.env.EMAIL_PORT, 10) === 465,
+    auth: { user, pass },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
+  });
+}
 
 // Map subject keys to clean titles
 const subjectMap = {
@@ -224,6 +240,13 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ message: 'Name, email, subject, and message are required fields.' });
   }
 
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.error('Email configuration missing: EMAIL_USER or EMAIL_PASS not set.');
+    return res.status(500).json({
+      message: 'Email service is currently not configured on the server. Please contact us directly by phone.',
+    });
+  }
+
   const now = new Date();
   const receivedAt = now.toLocaleString('en-IN', {
     timeZone: 'Asia/Kolkata',
@@ -232,6 +255,7 @@ router.post('/', async (req, res) => {
   });
 
   const adminRecipient = process.env.ADMIN_EMAIL_RECEIVER || 'jaytraders2008@yahoo.com';
+  const transporter = createTransporter();
 
   const adminMailOptions = {
     from: `"Jay Traders Portal" <${process.env.EMAIL_USER}>`,
@@ -259,9 +283,9 @@ router.post('/', async (req, res) => {
 
     return res.status(200).json({ message: 'Message sent successfully!' });
   } catch (error) {
-    console.error('Email sending error:', error);
+    console.error('Email sending error:', error.message || error);
     return res.status(500).json({
-      message: 'Failed to deliver message. Please try again or contact us directly by phone.',
+      message: 'Failed to deliver message. Please verify your email or contact us directly by phone.',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
   }

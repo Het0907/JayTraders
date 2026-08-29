@@ -7,28 +7,36 @@ dotenv.config();
 
 // Create reusable Nodemailer transporter with connection timeout protection
 function createTransporter() {
-  const user = process.env.EMAIL_USER;
+  const user = (process.env.EMAIL_USER || '').trim();
   const rawPass = process.env.EMAIL_PASS || '';
   const pass = rawPass.replace(/\s+/g, '').trim();
 
-  if (process.env.EMAIL_SERVICE === 'gmail' || !process.env.EMAIL_HOST) {
+  // If using Gmail, always use service: 'gmail' (bypasses port 587 cloud block)
+  const isGmail =
+    process.env.EMAIL_SERVICE === 'gmail' ||
+    !process.env.EMAIL_HOST ||
+    (process.env.EMAIL_HOST && process.env.EMAIL_HOST.includes('gmail')) ||
+    user.toLowerCase().endsWith('@gmail.com');
+
+  if (isGmail) {
     return nodemailer.createTransport({
       service: 'gmail',
       auth: { user, pass },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
+      connectionTimeout: 20000,
+      greetingTimeout: 20000,
+      socketTimeout: 25000,
     });
   }
 
+  const port = parseInt(process.env.EMAIL_PORT, 10) || 465;
   return nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: parseInt(process.env.EMAIL_PORT, 10) || 465,
-    secure: process.env.EMAIL_SECURE === 'true' || parseInt(process.env.EMAIL_PORT, 10) === 465,
+    port: port,
+    secure: port === 465 || process.env.EMAIL_SECURE === 'true',
     auth: { user, pass },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
+    connectionTimeout: 20000,
+    greetingTimeout: 20000,
+    socketTimeout: 25000,
   });
 }
 
@@ -283,10 +291,10 @@ router.post('/', async (req, res) => {
 
     return res.status(200).json({ message: 'Message sent successfully!' });
   } catch (error) {
-    console.error('Email sending error:', error.message || error);
+    console.error('Email sending error on Render:', error.message || error);
     return res.status(500).json({
-      message: 'Failed to deliver message. Please verify your email or contact us directly by phone.',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      message: error.message || 'Failed to deliver message. Please contact us directly by phone.',
+      code: error.code,
     });
   }
 });

@@ -5,41 +5,6 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Create reusable Nodemailer transporter with connection timeout protection
-function createTransporter() {
-  const user = (process.env.EMAIL_USER || '').trim();
-  const rawPass = process.env.EMAIL_PASS || '';
-  const pass = rawPass.replace(/\s+/g, '').trim();
-
-  // If using Gmail, always use service: 'gmail' (bypasses port 587 cloud block)
-  const isGmail =
-    process.env.EMAIL_SERVICE === 'gmail' ||
-    !process.env.EMAIL_HOST ||
-    (process.env.EMAIL_HOST && process.env.EMAIL_HOST.includes('gmail')) ||
-    user.toLowerCase().endsWith('@gmail.com');
-
-  if (isGmail) {
-    return nodemailer.createTransport({
-      service: 'gmail',
-      auth: { user, pass },
-      connectionTimeout: 20000,
-      greetingTimeout: 20000,
-      socketTimeout: 25000,
-    });
-  }
-
-  const port = parseInt(process.env.EMAIL_PORT, 10) || 465;
-  return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: port,
-    secure: port === 465 || process.env.EMAIL_SECURE === 'true',
-    auth: { user, pass },
-    connectionTimeout: 20000,
-    greetingTimeout: 20000,
-    socketTimeout: 25000,
-  });
-}
-
 // Map subject keys to clean titles
 const subjectMap = {
   'engineering-hardware': 'Engineering Hardware Inquiry',
@@ -240,19 +205,97 @@ function generateUserConfirmationHtml({ name, subject }) {
   `;
 }
 
+// Send email using Resend HTTPS REST API (Port 443 - 100% works on Render & Cloud)
+async function sendViaResend({ to, replyTo, subject, html }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) throw new Error('RESEND_API_KEY is not configured');
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey.trim()}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: process.env.RESEND_FROM || 'Jay Traders <onboarding@resend.dev>',
+      to: [to],
+      reply_to: replyTo,
+      subject,
+      html,
+    }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || data.error?.message || `Resend API returned status ${res.status}`);
+  }
+  return data;
+}
+
+// Send email using Brevo HTTPS REST API (Port 443 - 100% works on Render & Cloud)
+async function sendViaBrevo({ to, replyTo, replyToName, subject, html }) {
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey) throw new Error('BREVO_API_KEY is not configured');
+
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': apiKey.trim(),
+      'Content-Type': 'application/json',
+      'accept': 'application/json',
+    },
+    body: JSON.stringify({
+      sender: {
+        name: 'Jay Traders Website',
+        email: process.env.EMAIL_USER || 'parikhhet91@gmail.com',
+      },
+      to: [{ email: to }],
+      replyTo: { email: replyTo, name: replyToName },
+      subject,
+      htmlContent: html,
+    }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || `Brevo API returned status ${res.status}`);
+  }
+  return data;
+}
+
+// Send email using Nodemailer SMTP (Local development)
+async function sendViaSMTP({ to, replyTo, subject, html }) {
+  const user = (process.env.EMAIL_USER || '').trim();
+  const rawPass = process.env.EMAIL_PASS || '';
+  const pass = rawPass.replace(/\s+/g, '').trim();
+
+  if (!user || !pass) {
+    throw new Error('EMAIL_USER or EMAIL_PASS not set in environment variables');
+  }
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user, pass },
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    socketTimeout: 20000,
+  });
+
+  return transporter.sendMail({
+    from: `"Jay Traders Portal" <${user}>`,
+    to,
+    replyTo,
+    subject,
+    html,
+  });
+}
+
 // POST /api/contact (mounted on /api/contact in server.js, so route is '/')
 router.post('/', async (req, res) => {
   const { name, email, phone, company, subject, message } = req.body;
 
   if (!name || !email || !subject || !message) {
     return res.status(400).json({ message: 'Name, email, subject, and message are required fields.' });
-  }
-
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.error('Email configuration missing: EMAIL_USER or EMAIL_PASS not set.');
-    return res.status(500).json({
-      message: 'Email service is currently not configured on the server. Please contact us directly by phone.',
-    });
   }
 
   const now = new Date();
@@ -263,35 +306,58 @@ router.post('/', async (req, res) => {
   });
 
   const adminRecipient = process.env.ADMIN_EMAIL_RECEIVER || 'jaytraders2008@yahoo.com';
-  const transporter = createTransporter();
-
-  const adminMailOptions = {
-    from: `"Jay Traders Portal" <${process.env.EMAIL_USER}>`,
-    to: adminRecipient,
-    replyTo: email,
-    subject: `New Inquiry [${getSubjectLabel(subject)}] from ${name}`,
-    html: generateAdminEmailHtml({ name, email, phone, company, subject, message, receivedAt }),
-  };
-
-  const userMailOptions = {
-    from: `"Jay Traders" <${process.env.EMAIL_USER}>`,
-    to: email,
-    subject: `We have received your inquiry - Jay Traders`,
-    html: generateUserConfirmationHtml({ name, subject }),
-  };
+  const emailSubject = `New Inquiry [${getSubjectLabel(subject)}] from ${name}`;
+  const adminHtml = generateAdminEmailHtml({ name, email, phone, company, subject, message, receivedAt });
+  const userHtml = generateUserConfirmationHtml({ name, subject });
 
   try {
-    // Send admin notification
-    await transporter.sendMail(adminMailOptions);
+    // 1. If RESEND_API_KEY is configured, send via Resend HTTPS API (Best for Render)
+    if (process.env.RESEND_API_KEY) {
+      console.log('Sending contact email via Resend API (HTTPS)...');
+      await sendViaResend({
+        to: adminRecipient,
+        replyTo: email,
+        subject: emailSubject,
+        html: adminHtml,
+      });
 
-    // Send confirmation to user (non-blocking for response)
-    transporter.sendMail(userMailOptions).catch((err) => {
-      console.warn('Customer confirmation email failed:', err.message);
+      // Optional user confirmation
+      sendViaResend({
+        to: email,
+        replyTo: adminRecipient,
+        subject: 'We have received your inquiry - Jay Traders',
+        html: userHtml,
+      }).catch((err) => console.warn('Customer confirmation failed:', err.message));
+
+      return res.status(200).json({ message: 'Message sent successfully!' });
+    }
+
+    // 2. If BREVO_API_KEY is configured, send via Brevo HTTPS API
+    if (process.env.BREVO_API_KEY) {
+      console.log('Sending contact email via Brevo API (HTTPS)...');
+      await sendViaBrevo({
+        to: adminRecipient,
+        replyTo: email,
+        replyToName: name,
+        subject: emailSubject,
+        html: adminHtml,
+      });
+
+      return res.status(200).json({ message: 'Message sent successfully!' });
+    }
+
+    // 3. Fallback to Nodemailer SMTP
+    console.log('Sending contact email via Nodemailer SMTP...');
+    await sendViaSMTP({
+      to: adminRecipient,
+      replyTo: email,
+      subject: emailSubject,
+      html: adminHtml,
     });
 
     return res.status(200).json({ message: 'Message sent successfully!' });
   } catch (error) {
-    console.error('Email sending error on Render:', error.message || error);
+    console.error('Email sending error on server:', error.message || error);
     return res.status(500).json({
       message: error.message || 'Failed to deliver message. Please contact us directly by phone.',
       code: error.code,
@@ -299,4 +365,5 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router;
+

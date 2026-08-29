@@ -50,6 +50,7 @@ const ContactUs = () => {
       
       if (response.status === 200) {
         setIsSubmitted(true);
+        toast.success('Your message has been sent successfully!');
         setFormData({
           name: '',
           email: '',
@@ -341,20 +342,20 @@ const ContactUs = () => {
         {/* Call to Action */}
         <div className="text-center pb-16">
           <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-2xl shadow-xl p-12 text-white">
-            <h2 className="text-3xl font-bold mb-4">Need immediate suport?</h2>
+            <h2 className="text-3xl font-bold mb-4">Need immediate support?</h2>
             <p className="text-lg text-red-100 mb-8 max-w-2xl mx-auto">
               For urgent inquiries or immediate support, give us a call directly.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="tel:+91[YourNumber]"
+                href="tel:+919925031497"
                 className="inline-flex items-center bg-white text-red-600 px-8 py-4 rounded-xl hover:bg-gray-100 transition-colors font-semibold shadow-lg"
               >
                 <Phone className="w-5 h-5 mr-2" />
                 Call Us Now
               </a>
               <a
-                href="jaytraders2008@yahoo.com"
+                href="mailto:jaytraders2008@yahoo.com"
                 className="inline-flex items-center bg-red-800 text-white px-8 py-4 rounded-xl hover:bg-red-900 transition-colors font-semibold shadow-lg"
               >
                 <Mail className="w-5 h-5 mr-2" />

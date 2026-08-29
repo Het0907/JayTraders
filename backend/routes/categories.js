@@ -30,10 +30,10 @@ async function standardizeImage(inputPath, outputPath) {
             })
             .jpeg({ quality: 90 }) // Convert to JPEG with good quality
             .toFile(outputPath);
-        
+
         // Delete the original file
         await fs.unlink(inputPath);
-        
+
         return true;
     } catch (error) {
         console.error('Error standardizing image:', error);
@@ -168,11 +168,11 @@ router.get('/slug/:slug', async (req, res) => {
     try {
         const category = await Category.findOne({ slug: req.params.slug })
             .populate('parentCategory');
-        
+
         if (!category) {
             return res.status(404).json({ message: 'Category not found' });
         }
-        
+
         res.json(category);
     } catch (err) {
         console.error('Error fetching category by slug:', err);
@@ -228,10 +228,10 @@ router.put('/:id', upload.single('image'), async (req, res) => {
         if (req.file) {
             const originalPath = req.file.path;
             const standardizedPath = path.join('uploads', `standardized-${req.file.filename}`);
-            
+
             // Standardize the image
             const success = await standardizeImage(originalPath, standardizedPath);
-            
+
             if (success) {
                 imagePath = `/uploads/standardized-${req.file.filename}`;
             } else {
@@ -284,7 +284,7 @@ router.delete('/:id', async (req, res) => {
         // Delete main category
         await Category.findByIdAndDelete(req.params.id);
 
-        res.json({ 
+        res.json({
             message: `Category "${category.name}" and all associated products deleted successfully`,
             deletedProductsCount: deletedProducts.deletedCount || 0
         });
@@ -327,10 +327,10 @@ router.post('/:mainCategorySlug/subcategories', upload.single('image'), async (r
         if (req.file) {
             const originalPath = req.file.path;
             const standardizedPath = path.join('uploads', `standardized-${req.file.filename}`);
-            
+
             // Standardize the image
             const success = await standardizeImage(originalPath, standardizedPath);
-            
+
             if (success) {
                 imagePath = `/uploads/standardized-${req.file.filename}`;
             } else {
@@ -372,7 +372,7 @@ router.get('/subcategories/:subcategoryId/variants', async (req, res) => {
     try {
         const products = await Product.find({ category: req.params.subcategoryId })
             .select('variants');
-        
+
         // Extract unique variants
         const variants = products.reduce((acc, product) => {
             product.variants.forEach(variant => {
@@ -459,7 +459,7 @@ router.get('/subcategories/:subcategoryId/elements', async (req, res) => {
     try {
         const products = await Product.find({ category: req.params.subcategoryId })
             .select('name price description variants');
-        
+
         // Transform products into elements format
         const elements = products.map(product => ({
             _id: product._id,
@@ -490,15 +490,15 @@ router.post('/subcategories/:subcategoryId/elements', async (req, res) => {
             description: description || '',
             brand: 'Generic',
             category: req.params.subcategoryId,
-            variants: [{ 
-                size: 'Default', 
+            variants: [{
+                size: 'Default',
                 price: Number(price),
                 stock: 999999 // Set a very high number to indicate unlimited stock
             }]
         });
 
         const newProduct = await product.save();
-        
+
         // Return the element in the expected format
         res.status(201).json({
             _id: newProduct._id,

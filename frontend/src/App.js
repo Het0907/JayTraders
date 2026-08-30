@@ -19,8 +19,6 @@ import AdminRoute from './components/AdminRoute';
 import Footer from './components/Footer';
 import BrandVariants from './components/BrandVariants';
 import { AuthProvider } from './context/AuthContext';
-import Terms from './pages/Terms';
-import Shipping from './pages/Shipping';
 import ScrollToTop from './components/ScrollToTop';
 import API_ENDPOINTS from './config/api';
 
@@ -114,8 +112,6 @@ function App() {
               <Route path="/category/:categorySlug/:subcategorySlug" element={<CategoryProducts />} />
               <Route path="/category/:categorySlug/:subcategorySlug/:brandSlug" element={<BrandVariants />} />
               <Route path="/product/:productId" element={<ProductDetail />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/shipping" element={<Shipping />} />
             </Routes>
           </Layout>
         </Router>

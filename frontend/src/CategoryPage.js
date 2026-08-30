@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { ChevronRight, ArrowRight, Layers, PackageOpen, ArrowLeft } from 'lucide-react';
 import API_ENDPOINTS, { API_TIMEOUT } from './config/api';
 
 export default function CategoryPage() {
@@ -49,64 +50,150 @@ export default function CategoryPage() {
   }, [categorySlug]);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center space-y-4">
-        <div className="inline-block w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-gray-500 font-medium">Loading categories...</p>
+    <div className="jt-cat min-h-screen bg-[#EEF0EC] flex items-center justify-center">
+      <div className="text-center space-y-4 p-8 bg-white border border-[#14171A]/15 shadow-md">
+        <div className="inline-block w-10 h-10 border-4 border-[#C8102E] border-t-transparent rounded-full animate-spin" />
+        <p className="jt-mono text-xs uppercase tracking-widest text-[#14171A] font-bold">Accessing Material Database...</p>
       </div>
     </div>
   );
 
   if (error || !categoryInfo) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center space-y-3">
-        <p className="text-4xl">⚠️</p>
-        <p className="text-gray-700 font-semibold">{error || 'Category not found.'}</p>
-        <Link to="/home" className="text-red-600 font-bold hover:underline">Back to Home</Link>
+    <div className="jt-cat min-h-screen bg-[#EEF0EC] flex items-center justify-center p-4">
+      <div className="text-center space-y-4 max-w-md p-8 bg-white border border-[#14171A]/15 shadow-lg">
+        <PackageOpen className="w-12 h-12 text-[#C8102E] mx-auto" />
+        <h2 className="jt-display text-2xl font-bold uppercase text-[#14171A]">Category Not Located</h2>
+        <p className="text-sm text-[#4B5563]">{error || 'Requested material category is unavailable in catalog.'}</p>
+        <Link to="/home" className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#14171A] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#C8102E] transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Return to Catalog
+        </Link>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="text-center mb-14">
-          <p className="text-xs uppercase tracking-[0.35em] text-red-500 font-bold mb-3">Browse Catalog</p>
-          <h1 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">{categoryInfo.name}</h1>
-          {categoryInfo.description && <p className="mt-4 text-lg text-gray-500 max-w-xl mx-auto">{categoryInfo.description}</p>}
-          <div className="mt-6 h-1 w-16 bg-gradient-to-r from-red-500 to-pink-500 rounded-full mx-auto" />
-        </div>
-
-        {subcategories.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-5xl mb-4">📦</p>
-            <p className="text-xl font-semibold text-gray-500">No products added yet.</p>
-            <p className="text-sm text-gray-400 mt-2">Use the Product Utility to add products under this category.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {subcategories.map((sub, idx) => (
-              <Link
-                key={sub.name}
-                to={'/category/' + categorySlug + '/' + encodeURIComponent(sub.name)}
-                className="group relative flex items-center justify-center text-center bg-white border border-gray-200 rounded-2xl px-5 py-8 min-h-[120px] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 overflow-hidden"
-              >
-                <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-red-500 to-pink-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-t-2xl" />
-                <span className="absolute top-3 right-3 text-[11px] font-bold text-gray-300 group-hover:text-red-400 transition-colors">
-                  {String(idx + 1).padStart(2, '0')}
-                </span>
-                <h3 className="text-base sm:text-lg font-bold text-gray-800 group-hover:text-red-600 transition-colors leading-snug">
-                  {sub.name}
-                </h3>
-              </Link>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-14 text-center">
-          <Link to="/home" className="text-sm text-gray-400 hover:text-red-500 font-semibold transition-colors">Back to Home</Link>
+    <div className="jt-cat min-h-screen bg-[#EEF0EC]">
+      
+      {/* ============ BREADCRUMB HEADER ============ */}
+      <div className="border-b border-[#14171A]/10 bg-white/70">
+        <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12 py-3.5 flex items-center gap-2 text-xs">
+          <Link to="/home" className="jt-mono text-[#4B5563] hover:text-[#C8102E] transition-colors">HOME</Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="jt-mono text-[#4B5563]">CATALOG</span>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="jt-mono font-bold text-[#C8102E] uppercase">{categoryInfo.name}</span>
         </div>
       </div>
+
+      {/* ============ CATEGORY HERO SECTION ============ */}
+      <section className="relative overflow-hidden py-12 sm:py-16 border-b border-[#14171A]/10">
+        {/* Blueprint grid backdrop */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.55]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(31,58,95,0.20) 1px, transparent 1px), linear-gradient(90deg, rgba(31,58,95,0.20) 1px, transparent 1px)",
+            backgroundSize: "42px 42px",
+          }}
+        />
+
+        <div className="relative max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="max-w-4xl">
+            <span className="jt-mono inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-[#C8102E] mb-3">
+              <Layers className="w-3.5 h-3.5" />
+              Stock Line Classification
+            </span>
+            <h1 className="jt-display text-4xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-[#14171A] leading-[0.95] mb-4">
+              {categoryInfo.name}
+            </h1>
+            {categoryInfo.description && (
+              <p className="text-[#4B5563] text-base sm:text-lg leading-relaxed max-w-2xl">
+                {categoryInfo.description}
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ SUBCATEGORIES LIST ============ */}
+      <section className="py-12 sm:py-16">
+        <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12">
+          
+          <div className="flex items-center justify-between pb-3 mb-8 border-b border-[#14171A]/10">
+            <span className="jt-mono text-xs uppercase tracking-wider text-[#4B5563]">
+              Available Product Types ({subcategories.length})
+            </span>
+            <span className="jt-mono text-[11px] text-[#C8102E] font-bold">
+              SELECT ITEM FOR SPECIFICATIONS
+            </span>
+          </div>
+
+          {subcategories.length === 0 ? (
+            <div className="text-center py-16 bg-white border border-[#14171A]/15 p-8">
+              <PackageOpen className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+              <h3 className="jt-display text-2xl font-bold uppercase text-[#14171A]">No Subcategories In Stock</h3>
+              <p className="text-sm text-[#4B5563] mt-1">Please check back shortly or request a custom quotation directly from our sales team.</p>
+              <Link to="/contact" className="mt-4 inline-flex items-center gap-2 bg-[#C8102E] text-white text-xs font-bold uppercase tracking-wider px-6 py-3 hover:bg-[#a80d26] transition-colors">
+                Request Custom Quote
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {subcategories.map((sub, idx) => (
+                <Link
+                  key={sub.name}
+                  to={'/category/' + categorySlug + '/' + encodeURIComponent(sub.name)}
+                  className="jt-plate group relative bg-[#14171A] p-6 sm:p-7 flex flex-col justify-between min-h-[140px]"
+                >
+                  <span className="jt-rivet" style={{ top: 8, left: 8 }} />
+                  <span className="jt-rivet" style={{ top: 8, right: 8 }} />
+                  <span className="jt-rivet" style={{ bottom: 8, left: 8 }} />
+                  <span className="jt-rivet" style={{ bottom: 8, right: 8 }} />
+
+                  <div className="flex items-start justify-between mb-4">
+                    <span className="jt-mono text-xs font-bold text-[#E8A324] bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm">
+                      SPEC #{String(idx + 1).padStart(2, '0')}
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-[#C8102E] group-hover:translate-x-1 transition-all duration-200" />
+                  </div>
+
+                  <div>
+                    <h3 className="jt-display text-xl sm:text-2xl font-bold uppercase tracking-wide text-white group-hover:text-[#E8A324] transition-colors leading-snug mb-3">
+                      {sub.name}
+                    </h3>
+                    <span className="block h-0.5 w-8 bg-[#C8102E] group-hover:w-full transition-all duration-300" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-12 pt-6 border-t border-[#14171A]/10 flex justify-between items-center text-xs">
+            <Link to="/home" className="jt-mono text-[#14171A] hover:text-[#C8102E] font-bold transition-colors flex items-center gap-1.5">
+              &larr; BACK TO HOMEPAGE
+            </Link>
+            <Link to="/contact" className="jt-mono text-[#C8102E] font-bold hover:underline">
+              NEED CUSTOM SIZES? INQUIRE HERE &rarr;
+            </Link>
+          </div>
+
+        </div>
+      </section>
+
+      <style>{`
+        .jt-cat { font-family: 'IBM Plex Sans', sans-serif; }
+        .jt-display { font-family: 'Big Shoulders Display', sans-serif; }
+        .jt-mono { font-family: 'IBM Plex Mono', monospace; }
+
+        .jt-rivet {
+          position: absolute;
+          width: 7px;
+          height: 7px;
+          border-radius: 9999px;
+          background: radial-gradient(circle at 35% 30%, #6b7280, #23262b 70%);
+          box-shadow: 0 1px 1px rgba(0,0,0,0.5);
+        }
+      `}</style>
     </div>
   );
 }

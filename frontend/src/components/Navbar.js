@@ -771,32 +771,34 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Scrolling product showcase strip — prominent moving strip with edge-to-edge images */}
-            <div className="jt-nav-ticker">
-                {/* Track 1 */}
-                <div className="jt-nav-ticker-track">
-                    {/* We repeat the array 6 times to ensure it is wider than large desktop screens */}
-                    {Array(6).fill(navShowcaseImages).flat().map((item, idx) => (
-                        <img
-                            key={`t1-${idx}`}
-                            src={item.src}
-                            alt={item.alt}
-                            className="jt-nav-ticker-img"
-                        />
-                    ))}
+            {/* Scrolling product showcase strip — only on Home page */}
+            {(location.pathname === '/home' || location.pathname === '/') && (
+                <div className="jt-nav-ticker">
+                    {/* Track 1 */}
+                    <div className="jt-nav-ticker-track">
+                        {/* We repeat the array 6 times to ensure it is wider than large desktop screens */}
+                        {Array(6).fill(navShowcaseImages).flat().map((item, idx) => (
+                            <img
+                                key={`t1-${idx}`}
+                                src={item.src}
+                                alt={item.alt}
+                                className="jt-nav-ticker-img"
+                            />
+                        ))}
+                    </div>
+                    {/* Track 2 - Exact duplicate that follows right behind Track 1 */}
+                    <div className="jt-nav-ticker-track" aria-hidden="true">
+                        {Array(6).fill(navShowcaseImages).flat().map((item, idx) => (
+                            <img
+                                key={`t2-${idx}`}
+                                src={item.src}
+                                alt={item.alt}
+                                className="jt-nav-ticker-img"
+                            />
+                        ))}
+                    </div>
                 </div>
-                {/* Track 2 - Exact duplicate that follows right behind Track 1 */}
-                <div className="jt-nav-ticker-track" aria-hidden="true">
-                    {Array(6).fill(navShowcaseImages).flat().map((item, idx) => (
-                        <img
-                            key={`t2-${idx}`}
-                            src={item.src}
-                            alt={item.alt}
-                            className="jt-nav-ticker-img"
-                        />
-                    ))}
-                </div>
-            </div>
+            )}
 
             {/* Mobile / Tablet Navigation Drawer */}
             {isMenuOpen && (
